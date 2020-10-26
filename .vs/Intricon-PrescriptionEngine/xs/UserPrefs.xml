@@ -1,0 +1,31 @@
+﻿<Properties StartupConfiguration="{D00BCD18-EFD4-42CF-9A31-E95DC1A993E2}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Intricon-PrescriptionEngine/appsettings.json">
+    <Files>
+      <File FileName="Intricon-PrescriptionEngine/Controllers/WeatherForecastController.cs" Line="9" Column="2" />
+      <File FileName="Intricon-PrescriptionEngine/Startup.cs" Line="1" Column="1" />
+      <File FileName="Intricon-PrescriptionEngine/Program.cs" Line="1" Column="1" />
+      <File FileName="Intricon-PrescriptionEngine/appsettings.json" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Option id="ShowAllFiles" value="True" />
+          <Node name="Intricon-PrescriptionEngine" expanded="True">
+            <Node name="Intricon-PrescriptionEngine" expanded="True">
+              <Node name="Controllers" expanded="True">
+                <Node name="WeatherForecastController.cs" selected="True" />
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Intricon-PrescriptionEngine PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
