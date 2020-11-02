@@ -1,2 +1,0 @@
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/Intricon-PrescriptionEngine.csprojAssemblyReference.cache
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/Intricon-PrescriptionEngine.csproj.CoreCompileInputs.cache
