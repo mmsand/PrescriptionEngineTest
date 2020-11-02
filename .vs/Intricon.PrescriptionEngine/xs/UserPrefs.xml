@@ -1,17 +1,25 @@
 ﻿<Properties StartupConfiguration="{E601396C-ADBC-490D-8D8D-9B8ACAA8A27C}|">
   <MonoDevelop.Ide.ItemProperties.Intricon.PrescriptionEngine PreferredExecutionTarget="/Applications/Google Chrome.app" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Intricon.PrescriptionEngine/Web.config">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Intricon.PrescriptionEngine/Views/Web.config">
     <Files>
-      <File FileName="Intricon.PrescriptionEngine/Controllers/Audion8Controller.cs" Line="264" Column="1" />
-      <File FileName="Intricon.PrescriptionEngine/Web.config" Line="32" Column="18" />
+      <File FileName="Intricon.PrescriptionEngine/Controllers/Audion8Controller.cs" Line="65" Column="53" />
+      <File FileName="Intricon.PrescriptionEngine/Web.config" Line="4" Column="1" />
+      <File FileName="Intricon.PrescriptionEngine/packages.config" Line="1" Column="1" />
+      <File FileName="Intricon.PrescriptionEngine/Global.asax" Line="1" Column="1" />
+      <File FileName="Intricon.PrescriptionEngine/Global.asax.cs" Line="1" Column="1" />
+      <File FileName="Intricon.PrescriptionEngine/Views/Web.config" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Intricon.PrescriptionEngine" expanded="True">
-            <Node name="Intricon.PrescriptionEngine" expanded="True" selected="True">
+            <Node name="Intricon.PrescriptionEngine" expanded="True">
               <Node name="Controllers" expanded="True" />
               <Node name="Dependencies" expanded="True" />
+              <Node name="Views" expanded="True">
+                <Node name="Web.config" selected="True" />
+              </Node>
+              <Node name="Global.asax" expanded="True" />
             </Node>
           </Node>
         </State>
@@ -25,6 +33,7 @@
     <BreakpointStore>
       <Breakpoint file="/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/Controllers/Audion8Controller.cs" relfile="Intricon-PrescriptionEngine/Controllers/Audion8Controller.cs" line="260" column="1" />
       <Breakpoint file="/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/Controllers/Audion8Controller.cs" relfile="Intricon-PrescriptionEngine/Controllers/Audion8Controller.cs" line="262" column="1" />
+      <Breakpoint file="/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon.PrescriptionEngine/Controllers/Audion8Controller.cs" relfile="Intricon.PrescriptionEngine/Controllers/Audion8Controller.cs" line="260" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
