@@ -1,4 +1,0 @@
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/netcoreapp2.1/Intricon-PrescriptionEngine.csprojAssemblyReference.cache
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/netcoreapp2.1/Intricon-PrescriptionEngine.AssemblyInfoInputs.cache
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/netcoreapp2.1/Intricon-PrescriptionEngine.AssemblyInfo.cs
-/Users/markmikunas/Workspace/Intricon-PrescriptionEngine/Intricon-PrescriptionEngine/obj/Debug/netcoreapp2.1/Intricon-PrescriptionEngine.csproj.CoreCompileInputs.cache
