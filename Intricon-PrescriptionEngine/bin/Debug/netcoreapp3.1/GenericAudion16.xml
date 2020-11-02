@@ -1,0 +1,1618 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "GenericAudion16"
+    </assembly>
+    <members>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleGetBattery(GenericAudion16BLE.BatteryLevel@)">
+            <summary> 
+Returns one of three values indicating the battery level.
+It converts a voltage measurement to these levels.
+
+When using Zinc-Air batteries, due to their nature, 
+the battery will read "Normal" for most of it's life.
+		  
+ `SetRlChannel()` sets which device this method acts on.
+</summary>
+            <param name="batteryLevel"> [out] The battery level. </param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Get Battery Level" button. Value shall print in log.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleGetBattery(System.Single@)">
+            <summary> 
+Returns the voltage of the battery powering the HI.
+
+ `SetRlChannel()` sets which device this method acts on.
+</summary>
+            <param name="batteryVolts"> [out] The battery voltage. </param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Get Battery Voltage" button. Value shall print in log.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleConvertBatteryToLevel(System.Int32)">
+            <summary> 
+Converts the battery value to a meaningful value. 
+The battery value returned by UIS Notification callback.  
+</summary>
+            <param name="level"> The battery value returned by UIS Notification callback. </param>
+            <returns> A meaningful level from the enumeration `BatteryLevel`. </returns>
+
+@internal
+@test <b>None</b>
+
+Not tested in C# test app. Is coded in C# test app; Will be tested when A16BLE
+has UIS battery notifications.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleDisconnect">
+            <summary>
+	When done with a session, use this to disconnect from the device. 
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <returns>
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected, nzProgrammerError,
+	nzProgrammerTimeout.
+</returns>
+
+@internal
+@test <b>Use `BleConnect()`</b>
+
+Tested under `G_Audion16BLE::BleConnect()`.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16SBLE.BleConnect(GenericCommon.ScanInfo)">
+@copydoc G_Audion16BLE::BleConnect()
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleConnect(GenericCommon.ScanInfo)">
+            <summary>
+	Once you've found a BLE device you want to connect to, use this to connect to the device
+	and start reading and writing to it. BleConnect takes care of connecting and setting the
+	amp type in the Generic Driver. `GetAmpTypeDetected()` will report the connected
+	amp type after `BleConnect()`.
+	
+	`Address` and `AmpType` are required parameters; will return `nzBadArgument` if nonexistent.
+	
+	 `SetRlChannel()` sets which side the device is	connected to.
+</summary>
+            <param name="device">
+	The data for the device returned from scan updates callback.
+</param>
+            <returns>
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected,
+	nzBleSideAlreadyConnected, nzBleConnectToDeviceFailed.
+</returns>
+
+@internal
+@test <b>1 Normal use</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+
+@test <b>2 Out of range Reconnect use</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# With the aid still powered, walk the aid outside the BLE range then walk the aid back into range. 
+   Shall receive a Device Disconnected Callback in the log within some short amount of time.
+-# Click "Connect" and shall receive a connect successful in the log.
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+   
+@test  <b>3 Forced Reconnect use</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Disconnect" button. Shall NOT receive a Device Disconnected Callback in the log
+-# Click "Connect" and shall receive a connect successful in the log. 
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.BleRefreshAdvertising">
+            <summary> Refresh advertising data found in ScanInfo. Use this after updating ear side, 
+		  serial number, or MDA. 
+          
+          <b>Calling this will disconnect the hearing instrument.</b></summary>
+            <returns> A short. </returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Record the full ScanInfo in the log for
+   the HI under test.
+-# On "DSP" tab, click "Set Ear" and set a new ear side.
+-# "Read" with "Everything" or "MDA" read/load type selected.
+-# Select "MDA" tab.
+-# Click "Get Serial Number". Verify the serial number printed in the log
+   matches the serial number from ScanInfo.
+-# Verify the "ModelID" and "MANF_ID" match those found in the scan if.
+-# Type a new serial number (0 to 10 charters, any ASCII value -- test with numbers an letters)
+   in the text box next to "Set Serial Number" button.
+-# Click "Set Serial Number" button.
+-# Type a new value in the "ModelID" text box.
+-# Type a new value in the "MANF_ID" text box.
+-# "Load"
+-# "Lock"
+-# On "BLE Manage" tab, click "Refresh Advertising Data" button.
+-# Click "Start Scan"
+-# Find the device ScanInfo in the log. Verify that the ScanInfo "SerialNumber", "Ear", "ManufacturerID", and "ModelID" matches the 
+   new values set above.
+-# Repower HI under test.
+-# Click "Clear Log"
+-# Click "List Refresh".
+-# Find the device ScanInfo in the log. Verify that the ScanInfo "SerialNumber", "Ear", "ManufacturerID", and "ModelID" matches the 
+   new values set above.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.SetCompanionMicPattern(System.Int16)">
+            <summary> Sets companion mic directionality controlled by the directional switch 
+		  on the companion mic. 
+		  This method only affects modeling.
+		  Does not change the setting in the companion mic. </summary>
+            <param name="index"> 0 = omni, 1 = Cardioid (default). </param>
+            <returns> nzOK, nzBadArgument </returns>
+
+@internal
+
+@test <b>Tested under `G_Audion16BLE::ReadCompanionMicFileToModeler()`.</b></member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.SetCompanionMicLevel(System.Int16)">
+            <summary> Sets companion mic level controlled by the buttons on the companion mic. 
+		  Currently this method only affects modeling. 
+		  Does not change the setting in the companion mic.
+		  </summary>
+            <param name="index"> 2 = center of range (default), 0 = maximum volume, 4 = minimum volume. </param>
+            <returns> nzOK, nzBadArgument </returns>
+
+@internal
+
+@test <b>Tested under `G_Audion16BLE::ReadCompanionMicFileToModeler()`.</b></member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.ReadCompanionMicFileToModeler(System.String)">
+            <summary> Reads companion microphone table file to modeler. Equivalent with calling  
+		  ReadTransducerFile() then passing the returned response into the driver
+		   with `SetCompanionMicResponse()`</summary>
+            <param name="filePath"> Full pathname of the file. </param>
+            <returns> nzOK, nzswFileMissingData, nzExceptionOccured </returns>
+
+@internal
+
+In test app, this method is used on app start up, when choosing a different amp type, and when changing 
+the companion mic model in the "Companion Microphone Table" combo (when "Use Set Mic/Rec" check box is not checked).
+
+@test <b>1 Companion Mic Only</b>
+
+-# Start test app.
+-# Set amp type combo to "L155B"
+-# Set programmer combo to "Simulation" (can also test live).
+-# Set "Input_Mux" to 1.
+-# "Load"
+-# "Plot Response"
+-# Change the "Companion Microphone Table" combo to some other selection.
+-# Change the numeric input to "2" that is under the "Plot Response" button.
+-# Plot response. Verify the new response is slightly different than the first one.
+-# Try both CM mic pattern options by clicking "Set CM Mic Pattern" button (See `SetCompanionMicPattern()`).
+   The directional CM pattern shall have a low frequency roll-off starting around 1.4 Khz and a high-frequency 
+   boost above that.
+   -# Verify the status parameter "Modeler_CompanionMic_Pattern" matches what you set.
+-# Try different CM mic level options by clicking "Set CM Volume Index" button (See `SetCompanionMicLevel()`).
+   The CM response shall be shifted based on the input level.
+   -# Verify the status parameter "Modeler_CompanionMic_Level" matches what you set.
+
+@test <b>2 Mic + Companion Mic</b>
+
+-# Start test app or "Clear All Plots" ans set plot index to 1 
+(numeric input under "Plot Response" button).
+-# Set amp type combo to "L155B"
+-# Set programmer combo to "Simulation" (can also test live).
+-# Set "Input_Mux" to 12.
+-# "Load"
+-# "Plot Response"
+-# Change the plot index to "3".
+-# Change the "Companion Microphone Table" combo to some other selection.
+-# Plot response. Verify the new response for CM is slightly different than the first one.
+   The HI mic response shall be the same as the first one.
+-# Test different settings of the "Remote_Mix_Ratio" program parameter.
+-# Try both CM mic pattern options by clicking "Set CM Mic Pattern" button (See `SetCompanionMicPattern()`).
+   The directional CM pattern shall have a low frequency roll-off starting around 1.4 Khz and a high-frequency 
+   boost above that. 
+   -# Verify the status parameter "Modeler_CompanionMic_Pattern" matches what you set.
+-# Try different CM mic level options by clicking "Set CM Volume Index" button (See `SetCompanionMicLevel()`).
+   The CM response shall be shifted based on the input level.
+   -# Verify the status parameter "Modeler_CompanionMic_Level" matches what you set.
+   
+@test <b>3 Companion Mic Only - Measurement</b>
+ 
+ -# Use test 1 "companion mic only" steps using valid Companion Mic model and receiver model
+ -# Measure CM response via HI on FONIX and verify the graphing matches the measurement
+   within tolerances.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.SetEar(GenericAudion16BLE.ear)">
+            <summary> Sets an ear side that the hearing aid is programmed for. 
+
+If connected with a wire, you must repower the instrument for the new value to appear
+in `ScanInfo`.
+
+When wirelessly connected, use `BleRefreshAdvertising()` for the change to appear 
+in `ScanInfo` without repowering the HI.
+
+Note: When viewing the "Ear" from raw Advertising/Scan-Response data (such as in iOS or Android),
+it will have different values: 0, 1 = Unassigned, 2 = Left, 3 = Right.
+</summary>
+            <param name="side"> The side. 0 = left, 1 = right, 2 = unassigned. </param>
+            <returns> A short. </returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Connect an HI and Detect (Detect not required if BLE).
+-# On "DSP" tab, click "Set Ear" and set a new ear side.
+-# Repower aid.
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Review the scan info in the log until HI under test is found. Verify
+  that the "Ear" matches the new value set above.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.GetSerialNumber">
+            <summary> 
+Gets the serial number from the MDA.
+Before using this method, you must first use `ReadMda()` or `Detect()`. 
+The serial number also appears in the ScanInfo (BLE advertising data). </summary>
+
+See the [Serial Number page](@ref ANCHOR_SERIAL_NUMBER) for more information. 
+<returns> Nullptr if it fails, else the serial number. 
+		 It will be between 0 and 10 characters long. </returns>
+
+@internal
+@test <b>Tested under `G_Audion16BLE::SetSerialNumber()`.</b></member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.SetCompanionMicResponse(GenericCommon.SingleCollection)">
+            <summary> Loads the frequency response, in sensitivity
+	values, of the companion microphone used by the modeler in the frequency response calculation. 
+
+	 This array is backwards compatible with our legacy drivers. </summary>
+            <param name="response">
+	pointer to an name/value list, which contains the microphone sensitivity data. This array
+	is backwards compatible with our legacy drivers, and is detailed in the @ref
+	ModelerDetails "Modeler Details" section.
+</param>
+            <returns> One result code: nzOK,  </returns>
+
+@internal
+
+ This method only used by the test app when changing the companion mic model in the
+"Companion Microphone Table" combo while the "Use Set Mic/Rec" check box is checked.
+
+@test <b>1 Base</b>
+
+1. Check the "Use Set Mic/Rec" check box
+2. Set input to 12 (Mic + Companion Mic) or 2 (Companion Mic)
+3. "Plot Response"
+4. Select a different model in the "Companion Microphone Table" combo.
+5. "Plot Response". The response shall change according to the difference between the
+    previous mic table and current mic table.
+
+
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16BLE.TestPrompt(System.Int16)">
+            <summary> `TestPrompt` commands the nanoDSP to play a voice prompt phrase at the prompt level 
+setting previously programmed to the device. These voice prompts are used to notify user of 
+user made changes in volume and program, and also warnings such as low battery.
+
+Use `StringCollection^ GetVoicePromptList()` to get a list of the prompts.
+</summary>
+            <param name="Phrase">
+Which prompt index to play to the nanoDSP.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</param>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument.</returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Select DSP tab. 
+-# Choose a prompt to hear from the Prompt combo box next to the "Play Prompt" button.
+-# While listening to the HI, click the "Play Prompt" button. Expect to hear the selected prompt.
+</member>
+        <member name="M:GenericAudion16BLE.G_Audion16SBLE.BleResetInstrumentBondings">
+            <summary>
+	This deletes all bondings from the instrument. Must be connected to live instrument to
+	use this. After calling this, you must also delete the dongle bonding for this instrument
+	before disconnecting, or else you won't be able to connect to instrument in future 
+	with the same dongle.
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test
+
+Use tests on [the testing page](@ref pl2AdvertisingTests).
+</member>
+        <member name="T:GenericAudion16BLE.G_Audion16SBLE">
+            <summary> An Audion 16 SBLE amp type object. </summary>
+The G_Audion16SBLE class contains all the Audion 16 SBLE specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <member name="T:GenericAudion16BLE.G_Audion16BLE">
+            <summary> An Audion 16 BLE amp type object. </summary>
+The G_Audion16BLE class contains all the Audion 16 BLE specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <member name="T:GenericAudion16BLE.BatteryLevel">
+            <summary> This is the voltage level shown in meaningful terms to an end user. </summary>
+        </member>
+        <member name="T:GenericAudion16BLE.ear">
+            <summary> An indication of what ear the hearing aid is programmed for. This data is returned for each device 
+		  found while scanning. </summary>
+        </member>
+        <member name="M:GenericAudion16.G_Audion16h.GetSerialNumber">
+            <summary> 
+Gets the serial number from the MDA.
+Before using this method, you must first use `ReadMda()` or `Detect()`. 
+
+See the [Serial Number page](@ref ANCHOR_SERIAL_NUMBER) for more information. 
+</summary>
+            <returns> Nullptr if it fails, else the serial number. 
+		 It will be between 0 and 10 characters long. </returns>
+
+@internal
+@test <b>Tested under `G_Audion16h::SetSerialNumber()`.</b></member>
+        <member name="M:GenericAudion16.G_Audion16h.TestPrompt(System.Int16)">
+            <summary> `TestPrompt` commands the nanoDSP to play a voice prompt phrase at the prompt level 
+setting previously programmed to the device. These voice prompts are used to notify user of 
+user made changes in volume and program, and also warnings such as low battery.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</summary>
+            <param name="Phrase">
+Which prompt index to play. 
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</param>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument.</returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Select DSP tab. 
+-# Choose a prompt to hear from the Prompt combo box next to the "Play Prompt" button.
+-# While listening to the HI, click the "Play Prompt" button. Expect to hear the selected prompt.
+</member>
+        <member name="M:GenericAudion16.G_Audion16plus.GetDataLogLoopGainEvents">
+            <summary>	
+Use after GetDataLogLoopGainEvents(). This is a dictionary of lists constructed thusly:
+`Dictionary&lt;String, List&lt;Int32&gt;&gt;`. However, this uses a custom container named
+`Int32ListsDictionary` and the lists are custom containers named `IntCollection`.
+Both those and the `Int32ListsDictionary` are available in `GenericCommon`.
+
+The string parameter names have a shortcut via autocomplete. [See Easy Parameter Names.](@ref A16EasyParameterNames)
+ </summary>
+            <returns>	Nullptr if it fails, else the datalog of Loop Gain events. </returns>
+        </member>
+        <member name="M:GenericAudion16.G_Audion16plus.GetDataLogFeedbackEvents">
+            <summary>	
+Use after ReadDataLogFeedbackEvents(). This is a dictionary of lists constructed thusly:
+`Dictionary&lt;String, List&lt;Int32&gt;&gt;`. However, this uses a custom container named
+`Int32ListsDictionary` and the lists are custom containers named `IntCollection`.
+Both those and the `Int32ListsDictionary` are available in `GenericCommon`.
+
+The string parameter names have a shortcut via autocomplete. [See Easy Parameter Names.](@ref A16EasyParameterNames)
+ </summary>
+            <returns>	Nullptr if it fails, else the datalog of Feedback events. </returns>
+        </member>
+        <member name="M:GenericAudion16.G_Audion16plus.GetDataLogUserEvents">
+            <summary>	
+Use after ReadDataLogUserEvents(), this will return the data constructed thusly:
+`Dictionary&lt;String, List&lt;Int32&gt;&gt;`. However, this uses a custom container named
+`Int32ListsDictionary` and the lists are custom containers named `IntCollection`.
+Both those and the `Int32ListsDictionary` are available in `GenericCommon`.
+
+The string parameter names have a shortcut via autocomplete. [See Easy Parameter Names.](@ref A16EasyParameterNames)
+</summary>
+            <returns>	Nullptr if it fails, else the datalog of user events. </returns>
+        </member>
+        <member name="M:GenericAudion16.G_Audion16plus.GetSerialNumber">
+            <summary> 
+Gets the serial number from the MDA.
+Before using this method, you must first use `ReadMda()` or `Detect()`. 
+
+See the [Serial Number page](@ref ANCHOR_SERIAL_NUMBER) for more information. 
+</summary>
+            <returns> Nullptr if it fails, else the serial number. 
+		 It will be between 0 and 10 characters long. </returns>
+
+@internal
+@test <b>Tested under `G_Audion16h::SetSerialNumber()`.</b></member>
+        <member name="M:GenericAudion16.G_Audion16.SetVP_SDF(System.Int32,System.Int32,System.String)">
+            <summary>
+	Sets a Voice Prompt Data Table into the Driver. SDF (space delimited format) version for
+	those using an unmanaged interface to the driver. When done setting voice prompts into
+	the driver, use `Load_VoicePrompt()` to transfer the data to the nanoDSP.
+	
+	Use `StringCollection^ GetVoicePromptList()` to get a list of the prompts.
+</summary>
+            <param name="VP_Index">  The index of which prompt is being loaded. See `Load_VoicePrompt()` for
+	the list of prompts. Use `StringCollection^ GetVoicePromptList()` to get a list of the prompts.
+	</param>
+            <param name="VP_Length"> How many bytes (8 bit words) are contained in the VP_Array. Maximum is
+	7168. </param>
+            <param name="VP_String"> The voice prompt data table in an array of hex bytes (8 bit words). 
+						 Each byte string must be in hexadecimal formate. Maximum
+	is 7168 bytes. </param>
+            <returns> One result code: nzOK, nzBadArgument. </returns>
+
+@internal
+@test1
+
+-# Use the `TestPrompt()` steps to verify what prompts are in each position.
+-# Select DSP tab. 
+-# Choose a prompt in the Prompt combo box next to the "Play Prompt" button.
+-# Click "Set VP SDF" button. 
+-# Click the "Load VP" button.
+-# Repower the HI.
+-# Click "Detect" button.
+-# Click "Test Prompt". Verify you hear the newly loaded prompt.
+</member>
+        <member name="M:GenericAudion16.G_Audion16.SetVP(System.Int32,System.Int32,System.Byte[])">
+            <summary>
+	Sets a Voice Prompt Data Table into the Driver. When done setting voice prompts into the
+	driver, use `Load_VoicePrompt()` to transfer the data to the nanoDSP.
+	
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</summary>
+            <param name="VP_Index"> The index of which prompt is being loaded.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and count.
+</param>
+            <param name="VP_Length">
+	How many bytes (8 bit words) are contained in the VP_Array. Maximum is 7168.
+</param>
+            <param name="VP_Array">  The voice prompt data table in an array of bytes (8 bit words). Maximum
+	is 7168 bytes.
+</param>
+            <returns> One result code: nzOK, nzBadArgument. </returns>
+
+@internal
+@test1
+
+-# Use the `TestPrompt()` steps to verify what prompts are in each position.
+-# Select DSP tab. 
+-# Choose a prompt in the Prompt combo box next to the "Play Prompt" button.
+-# Click "Set VP" button.
+-# Click the "Load VP" button.
+-# Repower the HI.
+-# Click "Detect" button.
+-# Click "Test Prompt". Verify you hear the newly loaded prompt.
+</member>
+        <member name="M:GenericAudion16.G_Audion16.Load_VoicePrompt(System.Int16)">
+            <summary>
+Loads the Voice Prompt Data from the driver to EEPROM. First use `SetVP()` to load the
+voice prompt data into the driver.
+
+Please use the command `GenericCommon::G_Common::GetVoicePromptList()` to get these prompt labels.
+</summary>
+            <param name="prompt"> 
+Which prompt index to load to the nanoDSP. 
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</param>
+            <returns> One result code: nzOK, programmer specific error, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument.</returns>
+
+@internal
+@test1
+
+Tested under `SetVP()` and `SetVP_SDF()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16.Load_VoicePrompt">
+            <summary>
+	Loads all non-empty Voice Prompt Data from the driver to EEPROM. First use `SetVP()` or
+	`SetVP_SDF()`to load all desired voice prompt data into in the driver. Any prompts that
+	are empty in the driver will not be altered in the nanoDSP.
+</summary>
+            <returns> One result code: nzOK, programmer specific error, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument. </returns>
+
+@internal
+@test1
+
+-# Use the `TestPrompt()` steps to verify what prompts are in each position.
+-# Select DSP tab. 
+-# Choose a prompt in the Prompt combo box next to the "Play Prompt" button.
+-# Click "Set VP" button or "Set VP SDF" button
+-# Repeat last 2 steps for several prompts (alternating which Set button is used).
+-# Click the "Load All VP" button.
+-# Use the `TestPrompt()` steps to verify that the new prompts are in their expected positions.
+</member>
+        <member name="M:GenericAudion16.G_Audion16.TestPrompt(System.Int16)">
+            <summary>
+	`TestPrompt` commands the nanoDSP to play a voice prompt at the prompt level setting
+	previously programmed to the device. These voice prompts are used to notify user of user
+	made changes in volume and program, and also warnings such as low battery.
+	
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</summary>
+            <param name="Prompt"> 
+The voice prompt to be played. A value between 0 and 8.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</param>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument. </returns>
+
+@internal
+@test1
+
+-# Select DSP tab. 
+-# Choose a prompt to hear from the Prompt combo box next to the "Play Prompt" button.
+-# While listening to the HI, click the "Play Prompt" button. Expect to hear the selected prompt.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ReadProgramFile(System.String,GenericCommon.ProgramsDictionary,GenericCommon.ParamsDictionary,GenericCommon.ParamsDictionary,GenericCommon.BiquadDictionary)">
+            <summary> Reads a program file from the location indicated by `filePath` and populates
+          parameters passed in (`mapParams`, `mapConfig`, etc) with the values from the file. </summary>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams">   Dictionary list of the Program parameters to be filled with
+						   values from the file. </param>
+            <param name="mapConfig"> Dictionary list of the Configuration parameters to be filled with
+						 values from the file. </param>
+            <param name="mapMda"> Dictionary list of the MDA parameters to be filled with
+					  values from the file. Only some MDA parameters are stored in the file. 
+					  You will only receive the MDA parameters that  are stored in the file. 
+					  </param>
+            <param name="mapBiquads"> Dictionary list of the Biquad parameters to be filled with
+					  values from the file.
+					  </param>
+            <returns> One result code: nzOK, nzWrongAmpType, nzExceptionOccured, nzInvalidParameterName,
+			nzConfigParameterOutOfRange, nzProgramParameterOutOfRange, nzMissingParameterName.
+			</returns>
+
+@internal
+@test1
+
+Tested under `G_Audion16_Common::WriteProgramFile()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.GetConfigBiquads">
+This returns the Biquad coefficients. Biquads are customizable output and 
+noise filters in a name/value pair list. Biquads are customizable output and noise filters.
+
+See @ref A16BiquadCoefficients "Biquad Coefficients" and @ref A16BiquadConfigs "Biquad Configuration Parameters" 
+for more information.
+
+@return		A name/value pair list. Returns a Null dictionary if Biquads have not been read from instrument.
+
+@internal
+@test1
+
+Along with `SetConfigBiquads()`, test using steps under `Load()` while modifying Biquad filter values 
+listed on the "Config" tab labeled like this: Noise_Filter1_A0 and Output_Filter2_B2.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetConfigBiquads(GenericCommon.BiquadDictionary)">
+Sets the Biquad coefficients. Biquads are customizable output and noise filters 
+in a name/value pair list.
+
+See @ref A16BiquadCoefficients "Biquad Coefficients" and @ref A16BiquadConfigs 
+"Biquad Configuration Parameters" for more information.
+
+@return		One result code: nzOK, nzInvalidParameterName, nzConfigParameterOutOfRange, nzMissingParameterName;
+
+@internal
+@test1
+
+Along with `GetConfigBiquads()`, test using steps under `Load()` while modifying Biquad filter values listed on the "Config" tab
+labeled like this: Noise_Filter1_A0 and Output_Filter2_B2.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ClearPasscodeAndMda">
+Clears the passcode to non-passcode (value 0) and 
+sets all MDA memory at index 10 and higher to value 0.
+
+Must use `ReadMda()` before `ClearPasscodeAndMda()`,
+then `LoadMda()` and `Lock()` to set the changes in the nanoDSP.
+
+@return		One result code: nzOK.	
+
+@internal
+@test <b>1 No Lock</b>
+
+-# BLE Connect HI or connect the HI and Detect.  
+-# "Read" with "Everything" or "MDA" selected.  
+-# Use "Set MDA Passcode" to change the passcode.
+-# Type new non-zero passcode into "Pass Code" text box.
+-# Change all MDA to have some value, e.g. "8".
+-# "Load" with "Everything" or "MDA" selected.  
+-# Read MDA with current new passcode, e.g., "1". Check that all items reads and display correctly.
+-# MDA tab: "Click Clear Passcode + Load". Test App logging shall indicate success.
+-# Type "0" in "Pass Code" text box.
+-# "Read" with "Everything" or "MDA" selected.  
+-# The MDA Panel shall update the MDA values. Log shall display the number of parameters read
+and indicate success. Verify that all MDA from MDA_10 and above are now "0". Everything from
+MDA_9 and below shall be the same values as before "Clear Passcode + Load" was used.
+
+@test <b>2 With Lock</b>
+
+-# BLE Connect HI or connect the HI and Detect.  
+-# "Read" with "Everything" or "MDA" selected.  
+-# Use "Set MDA Passcode" to change the passcode.
+-# Type new non-zero passcode into "Pass Code" text box.
+-# Change all MDA to have some value, e.g. "3".
+-# "Load" with "Everything" or "MDA" selected.
+-# "Lock"
+-# Read MDA with current new passcode, e.g., "1". Check that all items reads and display correctly.
+-# MDA tab: "Click Clear Passcode + Load". Test App logging shall indicate success.
+-# "Lock"
+-# Restart Test App.
+-# Repower HI.
+-# Type "0" in "Pass Code" text box.
+-# "Read" with "Everything" or "MDA" selected.  
+-# The MDA Panel shall update the MDA values. Log shall display the number of parameters read
+and indicate success. Verify that all MDA from MDA_10 and above are now "0". Everything from
+MDA_9 and below shall be the same values as before "Clear Passcode + Load" was used.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ReadMda">
+Reads the Manufacturer Data Array (MDA) memory values from the nanoDSP to the driver.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test1
+
+Tested under `LoadMda()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ReadPrograms">
+`ReadPrograms` reads all program parameters from the nanoDSP RAM to the driver.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test1
+
+Do the same tests under `Read()`, except using the "Programs" combo box option.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ReadConfigs">
+`ReadConfigs` reads all configuration parameters from the nanoDSP RAM to the driver
+
+ The Biquad coefficients are also read with this command, based on a few rules:
+ 1. If "Noise_Filter_Ref" &gt; 0 then the noise Biquad coefficients are read.
+ 2. If "Output_Filter_Enable" &gt; 0 then the output Biquad coefficients are read.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test1
+
+Do the same tests under `Read()`, except using the "Configs" combo box option.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.LoadMda">
+`LoadMda` Loads the manufacturer data area from the driver to the nanoDSP RAM.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test <b>1 Set MDA and Load MDA function normally. Not using Lock doesn't retain MDA changes.</b>
+
+-# Read Mda
+-# Change each MDA value to some different value.Start with "1" in MDA0 and increment each
+   MDA cell from there so that there are no repeating values.
+-# Load MDA
+-# Read MDA and verify that all parameters are as set in Step 2.
+-# Repower instrument and all parameters should be back to where they were in step 1.  
+
+@test <b>2 Lock retains MDA changes.</b>
+
+-# Read Mda
+-# Change each MDA value to some different value. Start with "1" in MDA0 and increment each MDA 
+cell from there so that there are no repeating values.
+-# Load MDA
+-# Lock MDA.
+-# Repower instrument.
+-# Read MDA and verify that all parameters are as set in Step 2.  
+
+@test <b>3 Out of range values should cause ALL MDA to revert back to original.</b>
+   
+-# Read Mda
+-# Change some MDA cells to valid values.
+-# Change several random MDA cells to some out of range value. 
+-# Load MDA. Should get out of range error from `SetMda()`.
+-# Read MDA. The values that were set in range in step 2 should be unchanged  
+   (should be back to their settings in step 1)    
+
+@test <b>4 Get nzNotRead error (BLE)</b>
+
+-# Start Test App
+-# Power on BLE HI.
+-# BLE "Connect".
+-# "Read" with "MDA" or "Everything" selected.
+-# "Load" with "MDA" or "Everything" selected.
+-# "BLE Disconnect"
+-# Power on new HI.
+-# BLE "Connect" to the new HI.
+-# "Load" with "MDA" or "Everything" selected. {Expected: nzNotRead error}
+
+@test <b>4 Get nzNotRead error (BLE)</b>
+
+Tests that stress MicroGATT escape characters (0x7E, 0x7D) in the data. Use the MDA .JSON files that test the following (files located in GD Test Manual program files subdirectory):
+- Random escape characters in MDA 
+- All MDA words with escape characters, where ever can do this (for example MDA_1 = 0x7D7E or 0x7D7E). To Dev: there shall be extra BLE packets to make up for all the excaping.
+- Bytes that need excaping in last byte of packet. This means that the escape character ends up in current packet and Xored byte in next packet.
+
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.LoadConfigs">
+'LoadConfigs` loads all configuration parameters from the driver to the nanoDSP RAM.
+
+ The Biquad coefficients are also loaded with this command, based on a few rules:
+ 1. If "Noise_Filter_Ref" &gt; 0 then the noise Biquad coefficients are loaded.
+ 2. If "Output_Filter_Enable" &gt; 0 then the output Biquad coefficients are loaded.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test1
+
+Do the same tests under `Load()`, except using the "Configs" combo box option.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.LoadPrograms">
+`LoadPrograms` loads all program parameters from the driver to the nanoDSP RAM.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, or nzNoProgrammer.
+
+@internal
+@test1
+
+Do the same tests under `Load()`, except using the "Programs" combo box option.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetActiveVcPosition_dB(System.Int16)">
+            <summary> 
+	Sets active Volume Control position in the driver and nanoDSP if live, or only in the
+	driver if simulated. The requested position you pass in is in dB. The closest VC 
+	position index to the requested dB will be set. This is range tested
+	against the current VC configuration and must be 0 or a negative number.  Either a
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings
+	 before using this method. </summary>
+            <param name="position">
+	A zero indexed indicator of what to set the volume control index to. This is range tested
+	against the current VC configuration and must be 0 or a positive number.  Either a
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings
+	 before using this method.
+</param>
+            <returns> A short. </returns>
+
+@internal
+@test1
+
+Test in modes Z: Digital, Rocker, Single Push Button
+1. Set Instrument for VC Mode Z
+2. Click Read and note in ConfigEditor VC Pos in status to reference start position
+3. Measure aid on FONIX to reference starting position.
+4. Click "Set Act VC Pos dB" to change the desired VC position
+5. Read and verify Config param "VC_Pos" is where expected.
+6. Click "Connected?" (or any other DSP command) and note "VC_Pos" in status params.  
+   Verify instrument at new position. Will need to convert the dB value set to 
+   index value to match it to in "VC_Pos".
+7. Measure aid on FONIX to verify new position.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetActiveVcPosition(System.Int16)">
+            <summary>
+	Sets active Volume Control position in the driver and nanoDSP if live, or only in the
+	driver if simulated.
+	
+	This is useful for things like setting the volume control in the instrument to the 
+	Reserve Gain position when doing an Autofit, so that the response afterwards is on 
+	target. This only work on digital and rocker controls.
+	
+	If no error occurs, the status parameter "Modeler_VC_Pos" will be updated and the modeler 
+	will use the new value.
+</summary>
+            <param name="position"> 
+	A zero indexed indicator of what to set the volume control index to. This is range tested 
+	against the current VC configuration and must be 0 or a positive number.  Either a 
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings 
+	 before using this method. 
+</param>
+            <returns> One result code: nzOK, nzNoProgrammer, nzProgrammerError, nzWrongVCMode, 
+		  nzBadArgument. </returns>
+
+@internal
+@test1
+
+Test in modes Z: Digital, Rocker, Single Push Button
+1. Set Instrument for VC Mode Z
+2. Click Read and note in ConfigEditor VC Pos in status to reference start position
+3. Measure aid on FONIX to reference starting position.
+4. Click "Set Act VC Pos Index" to change the desired VC position
+5. Read and verify Config param "VC_Pos" is where expected.
+6. Click "Connected?" (or any other DSP command) and note "VC_Pos" in status params Verify instrument at new position.
+7. Measure aid on FONIX to verify new position.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.PlayTone(System.Int16,System.Int16,System.Int16)">
+Generates an Input referred tone at the level, frequency and duration specified.
+Before using this, enable validation mode with `SetValidationMode()`.
+
+@param	freq:		Frequency to play by index value.
+					| Index | Frequency (Hz) |
+					| :-- : | : -- : |
+					| 0 | 250 |
+					| 1 | 500 |
+					| 2 | 1000 |
+					| 3 | 1500 |
+					| 4 | 2000 |
+					| 5 | 3000 |
+					| 6 | 4000 |
+					| 7 | 6000 |
+
+@param  level:		Volume level to play at. Index range: 0-15. Output is from 20 dBSPL to 90 dBSPL in 5dB steps.
+
+@param  duration:	How long to play the tone for. Range: 0-32767. The actual duration in seconds is calculated as (.5ms*duration value)
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, nzNoProgrammer, or nzBadArgument.
+
+@internal
+@test1
+
+-# Choose the "Val Tones" tab
+-# Enable the "Enable Validation Tones" check box. (This calls SetValidationMode()).
+-# Choose a frequency, level, and duration.
+-# Click "Play Tone" button.
+-# Try "Play Tone" with several combinations of frequency, level, and duration.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetValidationMode(System.Int16)">
+Enables or disables the validation tone mode in the nanoDSP.
+This is use to play tones by the `PlayTone()` method.
+
+@param		mode: 0 = validation mode disabled, 1 = validation mode enabled
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, nzNoProgrammer, or nzBadArgument.	
+
+@internal
+@test
+
+Tested under `G_Audion16_Common::PlayTone()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetProgram(System.Int16)">
+SetProgram sets the active program within the driver. The program in the nanoDSP is not activated. 
+This is useful for things like modeling all programs via `GetFrArray()` without activating the nanoDSP.
+
+@param	program:   A zero indexed indicator of which program to activate. 
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, nzNoProgrammer, or nzBadArgument.
+
+@internal
+@test
+
+See tests under `GenericCommon::G_Common::SetProgram()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.AudioOff">
+Disables instrument sound output.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument,or  nzNoProgrammer.
+
+@internal
+@test
+
+Tests under `GenericCommon::GenericCommon::G_Common::AudioOff()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.AudioOn(System.Int16)">
+Sets the active program in the instrument and enables sound output.
+ 
+If a previous load caused a checksum error that hasn't been corrected,
+then the aid will not enable sound and will return a checksum error here.
+
+Warning: Make sure that the configuration parameters are set properly. This method uses those parameters to
+  validate `program` is being set within range.
+
+@param		program:	Zero indexed indicator of what program to activate. Index 0 = program 1 in nanoDSP.
+
+@return		One result code: nzOK, nzProgrammerError, nzNoInstrument, 
+			nzWrongInstrument, nzNoProgrammer, or nzBadArgument.
+
+@internal
+@test <b>reference with append</b>
+
+Test under `GenericCommon::G_Common::AudioOn(short active_program)`.
+
+Append: Verify the "is_Muted" status parameter updates accordingly.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.GetMda(System.Int32)">
+            <summary>
+	Gets the Manufacturer Data Array (MDA) memory values from the driver.  
+	See @ref MdaDetails "MDA Details" for information about the MDA data.
+</summary>
+            <param name="passcode"> The passcode that must be correct for the parameters to be 
+						returned. </param>
+            <returns> MDA: A name/value pair list. If wrong passcode used then will return
+				Null, and also put nzWrongPasscode in ErrorQueue. </returns>
+
+@internal
+@test1
+
+Tested under `SetMda()` tests.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetMda(GenericCommon.ParamsDictionary,System.Int32)">
+            <summary>
+	Sets the Manufacturer Data Area (MDA) in the driver to new memory values passed in. See
+	@ref MdaDetails "MDA Details" for information about the MDA data.
+</summary>
+            <param name="mapMda">   The Manufacturer Data Array in a name/value pair list. </param>
+            <param name="passcode"> The passcode. </param>
+            <returns> One error code: nzOK, nzInvalidParameterName, nzMdaParameterOutOfRange,
+		nzMissingParameterName. </returns>
+
+@internal
+@test1
+
+Test: Settings only affect driver.
+
+1. Connect to live HI. "Read" from HI. Note the MDA settings.
+2. Put a series of unusual settings throughout the MDA.
+3. Click "Set MDA".
+4. Click "Get MDA".The same values set in step 2 shall be returned.
+5. Click "Read".The parameters should come back as they were in step 1.
+
+@test2
+
+Test: Settings load and lock to DSP.
+
+1. Connect to live HI. "Read" from HI.Note the MDA settings.
+2. Put a series of unusual settings throughout the MDA.
+3. Click "Set MDA".
+4. Click "Load".
+5. Click "Lock"
+6. Repower aid and reconnect.
+7. Click "Read".The same values set in step 2 shall be returned.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.SetAutofitIgnoreBiquadOutputFilter(System.Boolean)">
+            <summary> Sets if autofit ignores biquad output filter when fitting against targets. 
+		  Set to true if don't call this method.  </summary>
+            <param name="ignore"> True to ignore Biquad output filter settings when autofitting. </param>
+
+@internal
+@test1
+
+Create a PGM that has Biquad output filters set up with drastic adjustment.
+For example, use as a peak filter centered at 1.2 Khz with 15 dB gain.
+
+-# Start test app
+-# Choose "Simulation" programmer type.
+-# Use File -&gt; "Open Program File" and open a 
+-# Click "Load"
+-# Click "Plot Response". Take screen shot of test app for later comparison. This should show 
+   the expected Biquad filter adjustment.
+-# On "Autofit" tab, choose any Target file. 
+-# Leave "Ignore Biquad Output Filters" checked.
+-# Click "Autofit". Expect no errors. The response shall match the targets EXCEPT where the
+  Biquad filter is applied.
+-# Un-check "Ignore Biquad Output Filters" check box.
+-# Click "Autofit". Expect no errors. The response shall match the targets  better where the
+  Biquad filter is applied. However, depending on the filter used, it will most likely not match perfectly.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.InterpolateTarget(System.Single[])">
+Returns an interpolated target. In the array you pass in, set any unknown point values to 'targetNull' (-999).
+
+Any null points at the beginning or ending of the array will be filled with the value of the closest non-null point.
+
+@param target:				This is an array of 23 frequency based target points, some of which need interpolation. 
+							At least one point must have a value.		
+
+@internal
+@test1
+
+ Tested with steps under `G_Audion16_Common::InterpolateTarget()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.InterpolateTarget(GenericCommon.SingleCollection)">
+Returns an interpolated target. In the array you pass in, set any unknown point values to 'targetNull' (-999).
+
+Any null points at the beginning or ending of the array will be filled with the value of the closest non-null point.
+
+@param target:				This is an array of target points, some of which need interpolation. 
+							At least one point must have a value.		
+
+@internal
+@test1
+
+-# Start test app
+-# Choose "Simulation" programmer type
+-# Choose any Target file. 
+-# Click "Autofit". Expect no errors.
+-# Click "Open Targets Folder".
+-# Edit any target file and save as new name with "missing targs" in the name.
+-# Remove several random values from the following tag sections: "TargetGain50", "TargetGain80", "TargetMPO".
+-# Choose this new edited Target file. 
+-# Click "Autofit". Expect no errors.
+-# Check the "Interpolate with array" check box.
+-# Click "Autofit". Expect no errors.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.GetFrequencyResponse(System.Int16)">
+            <summary>
+	`GetFrequencyResponse` returns the frequency response array 
+	generated by the modeler based on the current active program, side in the driver, mic
+	&amp; receiver models, and program and configuration parameter settings in the driver.
+	
+	This list of frequencies is backwards compatible with our legacy drivers. 
+	See the @ref ModelerDetails "Modeler Details" page for a list of frequencies.
+</summary>
+            <param name="input_level"> sets the input level at which the frequency response should be
+	generated for. Valid values are 40 - 100 inclusive. </param>
+            <returns>  	null pointer or empty collection if error, else the FR array of frequency response values detailed 
+			in the @ref ModelerDetails "Modeler Details" section. This data is backwards 
+			compatible with	our legacy drivers. </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.GetDataLog">
+@anchor GetDataLog
+<summary>
+	Gets the data log from the driver. Full details can be found under @ref A16DataLog 
+	"the Audion	16 data log section".
+</summary><returns> A null pointer if it fails, else a name/value pair list of data log parameters. </returns>
+
+@internal
+@test
+
+Use testing in `G_Audion16_Common::ReadDataLog()`. The `Read Data Log` button also calls
+`GetDataLog()`.
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ResetDataLog">
+            <summary>
+	Clears the DataLog memory in the nanoDSP.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer, or nzBadArgument. </returns>
+
+@internal
+@test1
+
+Use a few instruments filled with various events. 
+
+-# Click "Get Data Log" and verify the events exist. 
+-# Click "Reset Data Log".
+-# Click "Get Data Log". Verify the events are cleared.
+-# Repower and reconnect HI.
+-# Click "Get Data Log". Verify the events are still cleared.
+
+Note 1: "...VC_dB_avg" parameters return "9999" for no data (null).
+</member>
+        <member name="M:GenericAudion16.G_Audion16_Common.ReadDataLog">
+            <summary>
+	Reads data log from the nanoDSP into the driver. @ref A16DataLog "Audion 16 Data Logging"
+	for more details.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+		nzWrongInstrument, nzNoProgrammer. </returns>
+
+@internal
+@test1
+
+Note: It is easier to use Motif to verify data logging. However, must verify Motif
+and data in Test App agree.
+
+Use a few instruments filled with various known events(see list below).Click "Get Data Log".
+Review the results and verify that the log matches the known events. 
+(Same validation in Motif warrants validation here as long as no errors or other anomalies occur).
+
+Note: "VC_dB_avg" returns "9999" for no data(null).
+
+Events :
+*30 second delay before logged : program change, volume changes, low battery warning.
+* 3 minute delay before logged : repower events.
+</member>
+        <member name="M:Audion16_Common.AgLiDoWork(System.Single*,System.Int32,System.Int16)">
+	@brief Linear Interpolation Do Work: This is a recursive function that fills the holes in the audiogram with interpolated points.
+	@abstract
+	This function fills in 0 points based on values already in graph. Rules:
+	- If no points in graph, do nothing.
+	- For values that are zero at beginning X and end X of graph, make those points equal to the closest point with a value.
+	- for points at are zero and in-between points with values, interpolate the zero points to have values.
+
+	Interpolation Formula with ( Xa, Ya) and ( Xb, Yb) and looking for ( Xout, Yout):
+
+	@par
+	Yout = Ya + (((Xout - Xa) * (Yb - Ya)) / (Xb - Xa) )
+
+
+</member>
+        <member name="M:Audion16_Common.WriteProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.">
+            <summary>
+	Writes a program file for amps that include biquads. The MDA gets limited printing to PGM
+	files.
+</summary>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams"> Map of the program parameters. </param>
+            <param name="mapConfig"> The map of the configuration parameters. </param>
+            <param name="mapMda">    The map of the MDA parameters. </param>
+            <param name="mapBiqaud"> The map of the Biquad parameters. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="M:Audion16_Common.ReadProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.S">
+            <summary> Reads program filefor amps that include biquads.
+The MDA gets limited printing to PGM files. 
+</summary>
+            <remarks>
+Requirements:
+-# First few lines: Header, file format version
+-# AlgVer lines next.
+-# Configs next. Can be in any order
+-# Program Programs next, each program listing in order of program number. 
+   The order of the parameters in a program can be in any order.
+</remarks>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams"> [in,out] If non-null, options for controlling the map. </param>
+            <param name="mapConfig"> [in,out] If non-null, the map configuration. </param>
+            <param name="mapMda">    [in,out] If non-null, the map mda. </param>
+            <param name="mapBiqaud"> The map biqaud. </param>
+            <returns> The program file. </returns>
+        </member>
+        <member name="M:Audion16_Common.setAutofitIgnoreBiquadOutputFilter(System.Boolean)">
+            <summary> Sets if autofit ignores biquad output filter. 
+		  Set to true if don't call this method.  </summary>
+            <param name="ignore"> True to ignore Biquad output filter settings when autofitting. </param>
+        </member>
+        <member name="M:Audion16_Common.TargetLinearInterpolation(System.Single*,System.Int16)">
+@brief This function sets things up then calls the recursive function IfsAgLiDoWork()
+
+</member>
+        <member name="M:Audion16Modeller.setAutofitIgnoreBiquadOutputFilter(System.Boolean)">
+            <summary> Sets if autofit ignores biquad output filter. 
+		  Set to true if don't call this method.  </summary>
+            <param name="ignore"> True to ignore Biquad output filter settings when autofitting. </param>
+        </member>
+        <member name="T:GenericPaged">
+            <summary> For amps that read and write parameters in single pages. There are as 
+		  many pages as the amp requires to get all the parameters transfered.
+		  This is assumed to be 32 bit pages!
+		   </summary>
+            <seealso cref="!:T:GenericDriver" />
+        </member>
+        <member name="M:GenericDriver.WriteProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SB">
+            <summary> Writes a program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. </summary>
+            <param name="filePath">    Full pathname of the file. </param>
+            <param name="mapParams">   Map of the program parameters. </param>
+            <param name="mapConfig">   The map of the configuration parameters. </param>
+            <param name="mapMda">	   The map of the MDA parameters. </param>
+            <param name="LegacyNames"> (Optional) True to use legacy parameter names. False uses Generic Driver parameter names. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="M:GenericDriver.ReadProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SBy">
+            <summary> Reads program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. 
+</summary>
+            <remarks>
+Requirements:
+-# First few lines: Header, file format version
+-# AlgVer lines next.
+-# Configs next. Can be in any order
+-# Program Programs next, each program listing in order of program number. 
+   The order of the parameters in a program can be in any order.
+</remarks>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams"> [in,out] If non-null, options for controlling the map. </param>
+            <param name="mapConfig"> [in,out] If non-null, the map configuration. </param>
+            <param name="mapMda">    [in,out] If non-null, the map mda. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="T:Enums.UserEventCodes">
+            <summary>
+Itemized codes for User Event datalog.
+</summary>
+@anchor UserEventCodesEnums
+</member>
+        <member name="T:Enums.errorCode_eMiniTec">
+            <summary> 
+	The errorCode enumerations are specific errors for eMiniTec programmers.
+	
+	These are errors returned from the eMiniTec driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+Hardware Versions:	
+-* eMiniTec1 = old smaller programmer with no lights on it.
+-* eMiniTec2 = slightly larger programmer with lights on it for power and left / right activity.
+
+ </summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="InvalidHandle_OR_I2CnotCapable"> (1) Invalid handle (eMiniTec1 only), or no I2C capable programmer found. </param>
+            <param name="DeviceNotFound_OR_InvalidBaudRate"> (2) Device not found (eMiniTec1 only), or invalid baud rate (eMiniTec2 only): valid range: 400 to 400000. </param>
+            <param name="DeviceNotOpened"> (3) Device not opened. </param>
+            <param name="InputOutputError"> (4) Input/Output error. </param>
+            <param name="InsufficientResources"> (5) Insufficient resources. </param>
+            <param name="DeviceNotOpenedForErase"> (8) Device not opened for erase. </param>
+            <param name="DeviceNotOpenedForWrite"> (9) Device not opened for write. </param>
+            <param name="FailedToWriteDevice"> (10) Failed to write device. </param>
+            <param name="OtherError"> (18) Other error. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_A"> (120) Get Timing: Number of bytes written does not match requested. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_B"> (220) Get Timing: Number of bytes read does not match requested. </param>
+            <param name="ReadWriteUnmatchedWriteByteCount_A"> (140) Read/Write: Number of bytes written does not match requested. </param>
+            <param name="ReadWriteUnmatchedReadByteCount_B"> (240) Read/Write: Number of bytes read does not match requested. </param>
+            <param name="GetTimingDataTransferError_A"> (500) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingDataTransferError_B"> (501) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingSyncToInstrumentError_A"> (502) Get Timing: unable to sync with instrument. </param>
+            <param name="GetTimingSyncToInstrumentError_B"> (503) Get Timing: unable to sync with instrument. </param>
+            <param name="InvalidTimingValues"> (520) Read/Write: Invalid timing values. </param>
+            <param name="ReadTimeout"> (530) Read timeout. </param>
+            <param name="ReadWriteDataTransferError_A"> (540) Read/Write: Programmer to PC data transfer error. </param>
+            <param name="ReadWriteDataTransferError_B"> (550) Read/Write: Programmer to PC data transfer error. </param>
+        </member>
+        <member name="T:Enums.errorCode_NoahLink">
+            <summary> 
+	The errorCode enumerations for NOAHlink programmer specific errors. 
+
+	These are errors returned from the NOAHlink driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver if 'GenericCommon::G_Common::GetLastInterfaceError()' is used.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="BadParameter"> (1) Bad parameter to function. </param>
+            <param name="NotInitialized"> (2) Library not initialized. </param>
+            <param name="Initialized"> (3) Library already initialized. </param>
+            <param name="InitializeTimeout"> (16) Transaction timed out at start. </param>
+            <param name="FramingError"> (17) Transaction failed due to framing problem. </param>
+            <param name="NoDriver"> (256) NOAHlink drivers not installed. </param>
+            <param name="NoDevice"> (257) No NOAHlink device present. </param>
+            <param name="InUse"> (258) NOAHLink in use by other software. </param>
+            <param name="UnexpectedError"> (65535) Unexpected error occurred. </param>
+        </member>
+        <member name="T:Enums.errorCode_HIPRO">
+            <summary> 
+	The errorCode enumerations for Hi-Pro programmer specific errors. 
+
+	These are errors returned from the Hi-Pro driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+	The errors listed here are from the Hipro 4.1 SDK.
+</summary>
+            <param name="NoError"> (0) No error. </param>
+            <param name="HiproFramingError"> (010) Framing error reported from HI-PRO. </param>
+            <param name="ReceiverOverrun"> (011) Receiver overrun error reported from HI-PRO. </param>
+            <param name="ReceiverNoiseOnLine"> (012) Receiver noise on line error reported from HI-PRO. </param>
+            <param name="ReceiverTimeout"> (015) Receiver timeout error reported from HI-PRO. </param>
+            <param name="InvalidMessageNumber"> (020) Invalid message number reported from HI-PRO. </param>
+            <param name="InvalidMessageHeader"> (021) Invalid message header reported from HI-PRO. </param>
+            <param name="InvalidData"> (022) Invalid data reported from HI-PRO. </param>
+            <param name="MessageTermination"> (023) Message termination error reported from HI-PRO. </param>
+            <param name="TooManyCharactersInArgument"> (030) Too many characters in argument reported from HI-PRO. </param>
+            <param name="TooFewDataInStreamArgument"> (031) Too few data in stream argument reported from HI-PRO. </param>
+            <param name="TooManyDataInStreamArgument"> (032) Too many data in stream argument reported from HI-PRO. </param>
+            <param name="DataArgumentOutOfRange"> (033) Data argument out of valid range reported from HI-PRO. </param>
+            <param name="TooFewDataInDataBlock"> (034) Too few data in hex byte data block reported from HI-PRO. </param>
+            <param name="RequestedDataNotAvailable"> (035) Requested data is not available reported from HI-PRO. </param>
+            <param name="InvalidDataInInputBuffer"> (036) Invalid data in input buffer reported from HI-PRO. </param>
+            <param name="InvalidCommunicationMode"> (037) Invalid communication mode reported from HI-PRO. </param>
+            <param name="TimingTooFast"> (038) Timing too fast reported from HI-PRO. </param>
+            <param name="OutOfMemory"> (040) Out of memory reported from HI-PRO. </param>
+            <param name="LearnIsNotStarted"> (041) Learn is not started reported from HI-PRO. </param>
+            <param name="AlReadyInLearnMode"> (042) All ready in learn mode reported from HI-PRO. </param>
+            <param name="UndefinedOutputBitStream"> (043) No output bit stream defined reported from HI-PRO. </param>
+            <param name="UndefinedInputSpecification"> (044) No input specification defined reported from HI-PRO. </param>
+            <param name="UndefinedPinSpecification"> (045) No pin specification defined reported from HI-PRO. </param>
+            <param name="HiTimeout"> (046) H.I. timeout reported from HI-PRO. </param>
+            <param name="HiproDeviceAuthenticationFailed"> (047) The connected HI-PRO could not be authenticated (Device authentication). Please contact your supplier for assistance. </param>
+            <param name="InputBufferFull"> (048) Input Buffer is Full reported from HI-PRO. </param>
+            <param name="AdcTimeout"> (049) ADC timeout reported from HI-PRO. </param>
+            <param name="ChecksumError"> (050) Checksum error reported from HI-PRO. </param>
+            <param name="FlashVerifyError"> (051) Flash verify error reported from HI-PRO. </param>
+            <param name="InvalidDownloadedProgram"> (052) Invalid downloaded program reported from HI-PRO. </param>
+            <param name="UndefinedError"> (099) Undefined error reported from HI-PRO. </param>
+            <param name="HiproUnresponsive"> (200) TIMEOUT""HI-PRO does not respond""Check power and RS232 connections. </param>
+            <param name="ErrorInWriteComm"> (201) Error in WriteComm?""GetCommError? returns %d. </param>
+            <param name="ErrorInOpenComm"> (202) Error in OpenComm?""COM port may be in use by another device. Try to change COMPort= in HIPRO.INI. </param>
+            <param name="ErrorInSetCommState"> (203) Error in SetCommState? </param>
+            <param name="ErrorInBuildCommDCB"> (204) Error in BuildCommDCB. </param>
+            <param name="UserWasNotLoggedIn"> (205) User was not logged in. </param>
+            <param name="HiproHasBeenReset"> (206) HI-PRO has been reset ( settings lost ). </param>
+            <param name="InvalidDataReceivedFromHipro"> (207) Invalid data received from HI-PRO. </param>
+            <param name="InvalidHeaderReceivedFromHipro"> (208) Invalid header received from HI-PRO. </param>
+            <param name="TooBigOfStreamReceivedFromHipro"> (209) Too big stream received from HI-PRO. </param>
+            <param name="OutOfRangeNumericsReceivedFromHipro"> (210) Numerics received from HI-PRO is out of range. </param>
+            <param name="UnterminatedDataReceivedFromHipro"> (211) No terminator in data from HI-PRO. </param>
+            <param name="IncompleteBlockReceivedFromHipro"> (212) Incomplete block received from HI-PRO. </param>
+            <param name="ErrorInReadComm"> (213) Error in ReadComm?""GetCommError? returns %d. </param>
+            <param name="UnexpectedDataReceivedFromHipro"> (214) Unexpected data from HI-PRO. </param>
+            <param name="BadCheckSumInDataReceivedFromHipro"> (215) Bad CheckSum? in data received from HI-PRO. </param>
+            <param name="ErrorInCloseComm"> (216) Error in CloseComm? </param>
+            <param name="BadParameterSendToInstrumentDriver"> (217) Bad Parameter send to instrument driver. </param>
+            <param name="VBatLow"> (218) VBat low. Disconnect HI from HI-PRO. </param>
+            <param name="SelfTestStatusError"> (219) Self test status error. </param>
+            <param name="ReceiverOverflow"> (221) Receiver overflow""Input buffer too small or not emptied. </param>
+            <param name="Overrun"> (222) Overrun""Interrupts disabled too long time. Try lower baudrate.. </param>
+            <param name="ParityError"> (223) Parity error. </param>
+            <param name="DriverFramingError"> (224) Framing error""Wrong instrument connected or instrument turned off. </param>
+            <param name="BreakDetected"> (225) Break detected""Wrong instrument connected or instrument turned off. </param>
+            <param name="TransmissionQueueWasFull"> (226) Transmission queue was full""Output buffer too small. </param>
+            <param name="UnsupportedRequestedMode"> (227) Requested mode is not supported, or the idComDev parameter is invalid. </param>
+            <param name="TransmissionQueueNeverEmpties"> (228) Transmission queue never empties! Maybe IRQ conflict. </param>
+            <param name="DriverAuthenticationFailed"> (229) The connected HI-PRO could not be authenticated (PC Driver authentication). Please contact your supplier for assistance. </param>
+            <param name="UnknownError"> (255) Unknown error" </param>
+        </member>
+        <member name="T:Enums.errorCode_BLEBG">
+            <summary> 
+	The errorCode enumerations for Bluegiga BLE programmer specific errors. 
+	
+	These are errors returned from the Bluegiga driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="ble_err_success"> (0) No error. </param>
+            <param name="ble_err_invalid_param"> (384) Command contained invalid parameter. </param>
+            <param name="ble_err_wrong_state"> (385) Device is in wrong state to receive command. </param>
+            <param name="ble_err_out_of_memory"> (386) Device has run out of memory. </param>
+            <param name="ble_err_not_implemented"> (387) Feature is not implemented. </param>
+            <param name="ble_err_invalid_command"> (388) Command was not recognized. </param>
+            <param name="ble_err_timeout"> (389) Command or Procedure failed due to timeout. </param>
+            <param name="ble_err_not_connected"> (390) Connection handle passed is to command is not a valid handle. </param>
+            <param name="ble_err_flow"> (391) Command would cause either underflow or overflow error. </param>
+            <param name="ble_err_user_attribute"> (392) User attribute was accessed through API which is not supported. </param>
+            <param name="ble_err_invalid_license_key"> (393) No valid license key found. </param>
+            <param name="ble_err_command_too_long"> (394) Command maximum length exceeded. </param>
+            <param name="ble_err_out_of_bonds"> (395) Bonding procedure can't be started because device has no space
+									left for bond. </param>
+            <param name="ble_err_bt_error_success"> (512) Command completed successfully. </param>
+            <param name="ble_err_bt_bt_error_authentication_failure"> (517) Pairing or authentication failed due to incorrect
+		results in the pairing or authentication procedure. This could be due to an incorrect PIN or Link Key. </param>
+            <param name="ble_err_bt_pin_or_key_missing"> (518) Pairing failed because of missing PIN, or authentication failed
+											 because of missing Key. </param>
+            <param name="ble_err_bt_bt_error_memory_capacity_exceeded"> (519) Controller is out of memory. </param>
+            <param name="ble_err_bt_connection_timeout"> (520) Link supervision timeout has expired. </param>
+            <param name="ble_err_bt_connection_limit_exceeded"> (521) Controller is at limit of connections it can support. </param>
+            <param name="ble_err_bt_bt_error_command_disallowed"> (524) Command requested cannot be executed because the Controller
+							is in a state where it cannot process this command at this time. </param>
+            <param name="ble_err_bt_bt_error_invalid_command_parameters"> (530) Command contained invalid parameters. </param>
+            <param name="ble_err_bt_bt_error_remote_user_terminated"> (531) User on the remote device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_by_local_host"> (534) Local device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_ll_response_timeout"> (546) Connection terminated due to link-layer procedure timeout. </param>
+            <param name="ble_err_bt_bt_error_ll_instant_passed"> (552) Received link-layer control packet where instant was in the past. </param>
+            <param name="ble_err_bt_bt_error_controller_busy"> (570) Operation was rejected because the controller is busy and
+												   unable to process the request. </param>
+            <param name="ble_err_bt_bt_error_unacceptable_connection_interval"> (571) Remote evice terminated the connection
+																	because of an unacceptable connection interval. </param>
+            <param name="ble_err_bt_bt_error_directed_advertising_timeout"> (572) Directed advertising completed without a
+																connection being created. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_due_to_mic_failure"> (573) Connection was terminated because
+											the Message Integrity Check (MIC) failed on a received packet. </param>
+            <param name="ble_err_bt_bt_error_connection_failed_to_be_established"> (574) LL initiated a connection but the connection
+									has failed to be established. Controller did not receive any packets from remote end. </param>
+            <param name="ble_err_smp_passkey_entry_failed"> (769) The user input of passkey failed, for example, the user canceled the operation. </param>
+            <param name="ble_err_smp_oob_not_available"> (770) Out of Band data is not available for authentication. </param>
+            <param name="ble_err_smp_authentication_requirements"> (771) The pairing procedure cannot be performed as
+								 authentication requirements cannot be met due to IO capabilities of one or both devices. </param>
+            <param name="ble_err_smp_confirm_value_failed"> (772) The confirm value does not match the calculated compare value. </param>
+            <param name="ble_err_smp_pairing_not_supported"> (773) Pairing is not supported by the device. </param>
+            <param name="ble_err_smp_encryption_key_size"> (774) The resultant encryption key size is insufficient for the security
+											   requirements of this device. </param>
+            <param name="ble_err_smp_command_not_supported"> (775) The SMP command received is not supported on this device. </param>
+            <param name="ble_err_smp_unspecified_reason"> (776) Pairing failed due to an unspecified reason. </param>
+            <param name="ble_err_smp_repeated_attempts"> (777) Pairing or authentication procedure is disallowed because too little
+										 time has elapsed since last pairing request or security request. </param>
+            <param name="ble_err_smp_invalid_parameters"> (778) The Invalid Parameters error code indicates: the command length is
+											  invalid or a parameter is outside of the specified range. </param>
+            <param name="ble_err_last"> (779) Unkown. </param>
+            <param name="ble_err_att_invalid_handle"> (1025) The attribute handle given was not valid on this server. </param>
+            <param name="ble_err_att_read_not_permitted"> (1026) The attribute cannot be read. </param>
+            <param name="ble_err_att_write_not_permitted"> (1027) The attribute cannot be written. </param>
+            <param name="ble_err_att_invalid_pdu"> (1028) The attribute PDU was invalid. </param>
+            <param name="ble_err_att_insufficient_authentication"> (1029) The attribute requires authentication before it can be read or written. </param>
+            <param name="ble_err_att_request_not_supported"> (1030) Attribute Server does not support the request received from the client. </param>
+            <param name="ble_err_att_invalid_offset"> (1031) Offset specified was past the end of the attribute. </param>
+            <param name="ble_err_att_insufficient_authorization"> (1032) The attribute requires authorization before it can be read or written. </param>
+            <param name="ble_err_att_prepare_queue_full"> (1033) Too many prepare writes have been queued. </param>
+            <param name="ble_err_att_att_not_found"> (1034) No attribute found within the given attribute handle range. </param>
+            <param name="ble_err_att_att_not_long"> (1035) The attribute cannot be read or written using the Read Blob Request. </param>
+            <param name="ble_err_att_insufficient_enc_key_size"> (1036) The Encryption Key Size used for encrypting this link is insufficient. </param>
+            <param name="ble_err_att_invalid_att_length"> (1037) The attribute value length is invalid for the operation. </param>
+            <param name="ble_err_att_unlikely_error"> (1038) The attribute request that was requested has encountered an error that was
+										  unlikely, and therefore could not be completed as requested. </param>
+            <param name="ble_err_att_insufficient_encryption"> (1039) The attribute requires encryption before it can be read or written. </param>
+            <param name="ble_err_att_unsupported_group_type"> (1040) The attribute type is not a supported grouping attribute as defined by a higher layer specification. </param>
+            <param name="ble_err_att_insufficient_resources"> (1041) Insufficient Resources to complete the request. </param>
+            <param name="ble_err_att_application"> (1152) Application error code defined by a higher layer specification. </param>
+        </member>
+        <member name="T:Enums.SerialNumberStyle">
+            <summary> Serial number style options used for encoding and decoding the serial number
+		  into the MDA. See methods `G_Common::EncodeSerialNumber()` and 
+		  `G_Common::DecodeSerialNumber()`. </summary>
+            <param name="TenCharacterAlphaNumeric"> Supports any ASCII character in all 10 positions. </param>
+            <param name="OneToSevenDigits"> Allows between 1 and 7 digits, numeric only. Includes a separate 2 numeric digit year field. </param>
+            <param name="SixDigits"> Must enter 6 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="SevenDigits"> Must enter 7 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="LetterPlusFiveDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A00098. </param>
+            <param name="LetterPlusFourDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A0204. </param>
+        </member>
+        <member name="T:Enums.side">
+@anchor sideEnum
+<summary> The side enumeration is used for things like SetRLChannel(). </summary><param name="EarLeft"> Right ear when using an RL channel method. </param><param name="EarRight"> Left ear  when using an RL channel method. </param></member>
+        <member name="T:Enums.ampType">
+@anchor ampTypeEnum
+<summary> The ampType enumeration lists the amp types that the generic driver can detect. 
+		 Not all amp types are supported beyond detection; legacy drivers must be used in 
+		 those cases. To be used with `GetAmpTypeDetected()`.</summary><param name="typeNoAmp"> (-1) No amp type set</param><param name="typeNZ1"> (2) Digital One 2CH</param><param name="typeNZ2"> (5) Digital One 4CH AFC</param><param name="typeNZ2_Special"> (1000) Digital One 4CH</param><param name="typeNZ3"> (6) Digital One 4CH NR/NR+</param><param name="typeIntune"> (7) InTune</param><param name="typeSpin"> (9) Spin</param><param name="typeEthos"> (10) Ethos</param><param name="typeOvertus"> (1001) Overtus</param><param name="typeSpinNr"> (16) Spin NR</param><param name="typeEssential"> (18) Essential 150</param><param name="typeAudion6"> (20) Audion 6</param><param name="typeAudion4"> (21) Audion 4</param><param name="typeAudion8"> (23) Audion 8</param><param name="typeAudion8BLE"> (25) Audion8 BLE</param><param name="typeAudion16"> (24) Audion 16</param><param name="typeAudion16BLE"> (26) Audion16 BLE</param><param name="typeAudionS16BLE"> (29) Audion16S BLE </param><param name="typeAudion16h"> (28) Audion 16h</param><param name="typeAudion16BLEplus"> (30) Audion16 BLE Plus</param><param name="typeAudion16plus"> (31) Audion 16 plus</param></member>
+        <member name="T:Enums.interface_type">
+@anchor interface_typeEnum
+<summary> The interface_type enumeration lists the programmers that the generic driver supports. </summary></member>
+        <member name="T:GenericAudion16.G_Audion16h">
+            <summary> An Audion 16h amp type object. </summary>
+The G_Audion16h class contains all the Audion 16h specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F7500count">
+            <summary>7500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F7000count">
+            <summary>7000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F6500count">
+            <summary>6500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F6000count">
+            <summary>6000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F5500count">
+            <summary>5500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F5000count">
+            <summary>5000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F4500count">
+            <summary>4500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F4000count">
+            <summary>4000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F3500count">
+            <summary>3500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F3000count">
+            <summary>3000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F2500count">
+            <summary>2500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F2000count">
+            <summary>2000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F1500count">
+            <summary>1500_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F1000count">
+            <summary>1000_Hz_Oscillation_count</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F7500LoopGain">
+            <summary>7500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F7000LoopGain">
+            <summary>7000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F6500LoopGain">
+            <summary>6500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F6000LoopGain">
+            <summary>6000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F5500LoopGain">
+            <summary>5500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F5000LoopGain">
+            <summary>5000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F4500LoopGain">
+            <summary>4500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F4000LoopGain">
+            <summary>4000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F3500LoopGain">
+            <summary>3500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F3000LoopGain">
+            <summary>3000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F2500LoopGain">
+            <summary>2500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F2000LoopGain">
+            <summary>2000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F1500LoopGain">
+            <summary>1500_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.F1000LoopGain">
+            <summary>1000_Hz_Loop_Gain. A linear gain value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.BatteryVoltsX100">
+            <summary>Battery_voltsX100: Divide this Battery voltage by 100 to get the decimal value.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.Volume">
+            <summary>Event_Volume index. Use VC config to convert this to dB.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.Program">
+            <summary>Event_Program</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.EventCode">
+            <summary>Event_Code: 1 = start up, 2 = Volume Control Change, 3 = Program Change, 4 = Low Battery, 15 = test/trigger.</summary>
+        </member>
+        <member name="F:GenericAudion16.G_Audion16plus.DataLogEventParams.MasterClock">
+            <summary>Master_Clock_seconds</summary>
+        </member>
+        <member name="T:GenericAudion16.G_Audion16plus">
+            <summary> An Audion 16h amp type object. </summary>
+The G_Audion16plus class contains all the Audion 16 plus specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <member name="T:GenericAudion16.G_Audion16">
+            <summary> An Audion 16 amp type object. </summary>
+The G_Audion16 class contains all the Audion 16 specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <member name="T:GenericAudion16.G_Audion16_Common">
+            <summary> An Audion 16 amp type object. </summary>
+The G_Audion16 class contains all the Audion 16 specific functionalities.
+<seealso cref="!:T:G_Common" /></member>
+        <!-- Discarding badly formed XML document comment for member 'M:Programmer.readWrite(System.Int32!System.Runtime.CompilerServices.IsLong,System.Byte*,System.Byte*,System.UInt16,System.UInt16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16_Common.setDataLogSimulateTest(System.Int32)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16_Common.GetFrArray(System.Int16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16_Common.AutoFit(System.Int16,System.Int16,GenericAudion16.TargetAudion16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16_Common.SetMdaPasscode(System.Int32,System.Int32)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16_Common.WriteProgramFile(System.String,GenericCommon.ProgramsDictionary,GenericCommon.ParamsDictionary,GenericCommon.ParamsDictionary,GenericCommon.BiquadDictionary)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16plus.SetSerialNumber(System.String)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16plus.AllowSetMda0thru4'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16.G_Audion16h.SetSerialNumber(System.String)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:Programmer.readWrite(System.Int32!System.Runtime.CompilerServices.IsLong,System.Byte*,System.Byte*,System.UInt16,System.UInt16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16BLE.G_Audion16BLE.SetSerialNumber(System.String)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion16BLE.G_Audion16BLE.BleConvertBatteryToVolts(System.Int32)'. -->
+    </members>
+</doc>
