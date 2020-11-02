@@ -6,7 +6,7 @@
     <ProjectGuid>{E601396C-ADBC-490D-8D8D-9B8ACAA8A27C}</ProjectGuid>
     <ProjectTypeGuids>{349C5851-65DF-11DA-9384-00065B846F21};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
-    <RootNamespace>NetPrescriptionEngine</RootNamespace>
+    <RootNamespace>Intricon.PrescriptionEngine</RootNamespace>
     <AssemblyName>NetPrescriptionEngine</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
   </PropertyGroup>

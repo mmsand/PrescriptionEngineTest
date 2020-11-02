@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Optimization;
 
-namespace NetPrescriptionEngine
+namespace Intricon.PrescriptionEngine
 {
     public class BundleConfig
     {

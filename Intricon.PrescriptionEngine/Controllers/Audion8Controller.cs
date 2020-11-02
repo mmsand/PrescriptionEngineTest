@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 
-namespace NetPrescriptionEngine.Controllers
+namespace Intricon.PrescriptionEngine.Controllers
 {
     // [ApiAuthorize]
     //public class Audion8Controller : ApiController

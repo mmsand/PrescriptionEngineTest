@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Headers;
 using System.Web.Http;
 
-namespace NetPrescriptionEngine
+namespace Intricon.PrescriptionEngine
 {
     public static class WebApiConfig
     {
