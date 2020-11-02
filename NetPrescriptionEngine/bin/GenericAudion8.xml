@@ -1,0 +1,967 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "GenericAudion8"
+    </assembly>
+    <members>
+        <member name="M:GenericAudion8.G_Audion8.ResetDataLog">
+            <summary>
+	Clears the DataLog memory in the nanoDSP.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+				nzWrongInstrument, nzNoProgrammer. </returns>
+
+@internal
+@test1
+
+Use a few instruments filled with various events. 
+
+-# Click "Get Data Log" and verify the events exist. 
+-# Click "Reset Data Log".
+-# Click "Get Data Log". Verify the events are cleared.
+-# Repower and reconnect HI.
+-# Click "Get Data Log". Verify the events are still cleared.
+
+Note 1: "...VC_dB_avg" parameters return "9999" for no data (null).
+Note 2 : "Total_Hours_Since_Manufactured" is the only data that will not be cleared.
+</member>
+        <member name="M:GenericAudion8.G_Audion8.GetDataLog">
+            <summary> 
+	Gets the data log from the driver after it has been read from the device. 
+	Full details can be found under @ref A8DataLog "the Audion 8 data log section".
+</summary>
+            <returns> A null pointer if it fails, else a name/value pair list of data log parameters. </returns>
+
+@internal
+@test
+
+Use testing in `G_Audion8::ReadDataLog()`. The "Read Data Log" button also calls
+`GetDataLog()`.
+</member>
+        <member name="M:GenericAudion8.G_Audion8.ReadDataLog">
+            <summary>
+	Reads data log from the nanoDSP into the driver. @ref A8DataLog "Audion 8 Data Logging"
+	for more details.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+		nzWrongInstrument, nzNoProgrammer, or nzBadArgument. </returns>
+
+@internal
+@test1
+
+Use a few instruments filled with various known events(see list below).
+
+-# Click "Get Data Log".
+-# Review the results and verify that the log matches the known events. 
+ (Same validation in Motif warrants validation here as long as no errors or 
+ other anomalies occur).
+
+Note: "VC_dB_avg" returns "9999" for no data(null).
+
+Events :
+*30 second delay before logged : program change, volume changes, low battery warning.
+* 3 minute delay before logged : repower events.
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.ReadProgramFile(System.String,GenericCommon.ProgramsDictionary,GenericCommon.ParamsDictionary,GenericCommon.ParamsDictionary)">
+            <summary> Reads a program file from the location indicated by `filePath` and populates
+          parameters passed in (`mapParams`, `mapConfig`, etc) with the values from the file. 
+          Will read from both new format and legacy format PGM files. </summary>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams">   Dictionary list of the Program Parameters to be filled with
+						   values from the file. </param>
+            <param name="mapConfig"> Dictionary list of the Configuration Parameters to be filled with
+						 values from the file. </param>
+            <param name="mapMda"> Dictionary list of the MDA Parameters to be filled with
+					  values from the file. Only some MDA parameters are stored in the file. 
+					  You will only receive the MDA parameters that are stored in the file. 
+					  </param>
+            <returns> One result code: nzOK, nzWrongAmpType, nzExceptionOccured, nzInvalidParameterName,
+			nzConfigParameterOutOfRange, nzProgramParameterOutOfRange, nzMissingParameterName.
+			</returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetMatrixGainCeiling(System.Int16)">
+            <summary> Sets the maximum Matrix Gain index value allowed by Autofit. </summary>
+            <param name="maxIndex"> Zero-based index of the maximum Matrix Gain that is to be allowed by Autofit. </param>
+            <returns> One result code: nzOK, nzBadArgument. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetActiveVcPosition_dB(System.Int16)">
+            <summary> 
+	Sets active Volume Control position in the driver and nanoDSP if live, or only in the
+	driver if simulated. The requested position you pass in is in dB. The closest VC 
+	position index to the requested dB will be set. This is range tested
+	against the current VC configuration and must be 0 or a negative number.  Either a
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings
+	 before using this method. 
+</summary>
+            <param name="position">
+	A zero indexed indicator of what to set the volume control index to. This is range tested
+	against the current VC configuration and must be 0 or a positive number.  Either a
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings
+	 before using this method.
+</param>
+            <returns> A short. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetActiveVcPosition(System.Int16)">
+            <summary>
+	Sets active Volume Control position in the driver and nanoDSP if live, or only in the
+	driver if simulated.
+	
+	This is useful for things like setting the volume control in the instrument to the 
+	Reserve Gain position when doing an Autofit, so that the response afterwards is on 
+	target. This only work on digital and rocker controls.
+	
+	If no error occurs, the status parameter "Modeler_VC_Pos" will be updated and the modeler 
+	will use the new value.
+</summary>
+            <param name="position"> 
+	A zero indexed indicator of what to set the volume control index to. This is range tested 
+	against the current VC configuration and must be 0 or a positive number.  Either a 
+	`Read()` or a `SetConfig()` and `Load()` should be done to update the config settings 
+	 before using this method. 
+</param>
+            <returns> One result code: nzOK, nzNoProgrammer, nzProgrammerError, nzWrongVCMode, 
+		  nzBadArgument. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.TestPrompt(System.Int16)">
+            <summary>
+`TestPrompt` commands the nanoDSP to play a voice prompt at the prompt level setting
+programmed to the device. These voice prompts are used to notify user of user
+made changes in volume and program, and also warnings such as low battery.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</summary>
+            <param name="phrase">
+The voice prompt phrase you want played. A value between 0 and 6.
+
+Use `GenericCommon::G_Common::GetVoicePromptList()` to get a list of these prompt lables and 
+how many there are.
+</param>
+            <returns>
+	One result code: nzOK, nzProgrammerError, nzNoInstrument, nzWrongInstrument, nzNoProgrammer,
+	or nzBadArgument.
+</returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.PlayTone(System.Int16,System.Int16,System.Int16)">
+            <summary>
+	Generates an Input referred tone at the level, frequency and duration specified. Before
+	using this, enable validation mode with `SetValidationMode()`.
+	
+	Note: This validation tones feature is not the same as `TestPrompt()` or `TestTone()`.
+</summary>
+            <param name="freq">
+	Frequency to play by index value.
+		| Index | Frequency (Hz) |
+		| :-- : | : -- : |
+		| 0 | 250 |
+		| 1 | 500 |
+		| 2 | 1000 |
+		| 3 | 1500 |
+		| 4 | 2000 |
+		| 5 | 3000 |
+		| 6 | 4000 |
+		| 7 | 6000 |
+</param>
+            <param name="level">
+	Volume level to play at. Index range: 0-15. Output is from 20 dBSPL to 90 dBSPL in 5dB
+	steps.
+</param>
+            <param name="duration">
+	How long to play the tone for. Range: 0-32767. The actual duration in seconds is
+	calculated as (.5ms*duration value)
+</param>
+            <returns>
+	One result code: nzOK, nzProgrammerError, nzNoInstrument, nzWrongInstrument, nzNoProgrammer, or
+	nzBadArgument.
+</returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetValidationMode(System.Int16)">
+            <summary>
+	Enables or disables the Validation tone mode in the nanoDSP. This is used to play tones
+	by the `PlayTone()` method. Validation mode is a special mode that disables the inputs 
+	(mic, telecoil, etc) so that only the play tones are heard. 
+	
+	Note: This validation tones feature is not the same as `TestPrompt()` or `TestTone()`.
+</summary>
+            <param name="mode"> 0 = validation mode disabled, 1 = validation mode enabled. </param>
+            <returns>
+	One result code: nzOK, nzProgrammerError, nzNoInstrument, nzWrongInstrument, nzNoProgrammer,
+	nzBadArgument.
+</returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.AutofitLinear(GenericAudion8.EarMoldOptions,GenericAudion8.TargetLinear)">
+            <summary> 
+Autofit is an algorithm that adjusts the hearing instrument parameters to match a given set of prescription targets.
+This AutofitLinear was originally designed to work with IntriCon prescription algorithm "RTI Target Calc".
+AutofitLinear has adaptations, allowing it to be used successfully with NAL-NL2 and DSL.
+See `GenericAudion8::TargetLinear` for information about the autofit options. 
+</summary>
+            <remarks>
+AutofitLinear is ALWAYS performed on program 1 (index 0). If Autofitting some other program, swap it with program 1
+and use `SetParams()` before calling autofit. Then use `GetParams()` and swap the programs back. Finally,
+call `SetParams()` again to populate the Autofit program with the results.
+
+Make sure the Configuration parameters are set up correctly. AutofitLinear takes the VC configuration into account.
+
+When VC is enabled, AutofitLinear will set `TargetLinear.ResGain` to the actual reserve gain dB value the Autofit used.
+You must set the VC position to the `TargetLinear.ResGain` gain value after the Autofit is complete
+(see below for more information).
+
+## Prerequisites
+Before calling Autofit these things need to be appropriately set:
+-# Program 1 (index 0) configured as the program to be autofit.
+-# `SetRecResponse()` and `SetMicResponse()` (or their alternative methods).
+-# "Input_Mux" parameter.
+-# All relevant Preamp Gain parameters.
+-# All VC Configuration parameters.
+-# `SetMatrixGainCeiling()`
+-# `SetRecSaturation()` (optional): For the most accurate MPO fitting, use `SetRecSaturation()` to set the receiver saturation.
+ The receiver table sent through `SetRecResponse()` does not include the receiver saturation characteristics.  Each 
+ hearing instrument model may have it's own specific saturation value. 
+ 
+## Parameters Adjusted by Autofit
+Only the following parameters are adjusted by the Autofit algorithm:
+-# Matrix Gain
+-# BEQs
+-# Compression Ratios (how depends on input parameter `UseCR`)
+-# Compression Thresholds (if requested via input parameter `SpeechTK`)
+-# MPO Thresholds adjusted to match MPO targets
+
+## Order Of Precedence
+Autofit makes some decisions based on input options. The order of precedence is:
+	-# Never let `Matrix_Gain` exceed the Matrix Gain Ceiling.
+	-# Match targets over the range of 500 hz - 4 Khz. Matching targets outside this range is attempted but not the focus.
+	-# Attempt to give at least some of the requested reserve gain.
+	-# Attempt to leave some headroom above the BEQs for user adjustment.
+	
+## Working with Reserve Gain
+While `TargetLinear.ResGain` is honored during the autofit, the reserve gain may be reduced in order
+to achieve matching the targets. This occurs when `TargetLinear.UseCR` `ReduceResGainDynamically` bit is set to 1. All programs must be
+autofit at the same VC position to maintain relative levels between programs. The following procedure is one way to accomplish this:
+-# Autofit program 1 with `ReduceResGainDynamically` bit set to 1. Autofit will set `TargetLinear.ResGain` to the actual, possibly reduced, reserve gain used. Save this returned
+ReserveGain value to some variable, called 'ResGainUsed' for this example. 
+-# If using Autofit on the other programs, set `ReduceResGainDynamically` bit to 0 and set the ReserveGain for other programs to 'ResGainUsed'.
+This will maintain that the Autofit occurs at the same VC position for all programs.
+-# Call `SetVcPositionIndex()` using the 'ResGainUsed' value. This will update the modeler to give the auto fit response when `GetFrArray()` is called.
+-# When loading the Autofit results to the instrument, call `SetActiveVcPosition_dB()` using the 'ResGainUsed' value. This will set the aid to the Autofit position.
+</remarks>
+            <param name="earMold"> Setting for if using a open mold or not. Use `GenericAudion8::EarMoldOptions` enum to set this.</param>
+            <param name="target">  Hearing loss targets and options to Autofit with. </param>
+            <returns> One result code: nzOK, nzBadArgument. </returns>
+
+@internal
+@test1
+
+Use the "Autofit Base Tests" sheet from test spread sheet.
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.GetFrequencyResponse(System.Int16)">
+            <summary>
+	`GetFrequencyResponse` returns the frequency response array 
+	generated by the modeler based on the current active program, side in the driver, mic
+	&amp; receiver models, and program and configuration parameter settings in the driver.
+	
+	This list of frequencies is backwards compatible with our legacy drivers.
+	See the @ref ModelerDetails "Modeler Details" page for a list of frequencies.
+</summary>
+            <param name="input_level"> sets the input level at which the frequency response should be
+	generated for. Valid values are 40 - 100 inclusive. </param>
+            <returns>  	null pointer or empty collection if error, else the FR array of frequency response values detailed 
+			in the @ref ModelerDetails "Modeler Details" section. This data is backwards 
+			compatible with	our legacy drivers. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.GetMda(System.Int32)">
+            <summary>
+	Gets the Manufacturer Data Array (MDA) memory values from the driver.  
+	See @ref MdaDetails "MDA Details" for information about the MDA data.
+</summary>
+            <param name="passcode"> Set this to zero.The passcode is not used by this amp. 
+						Parameter remains so that the
+						same method can be used in your code for all amp types.</param>
+            <returns> MDA: A name/value pair list.</returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetMda(GenericCommon.ParamsDictionary,System.Int32)">
+            <summary>
+	Sets the Manufacturer Data Area (MDA) in the driver to new memory values passed in. See
+	@ref A8MdaDetails "Audion 8 MDA Details" for information about the MDA data.
+</summary>
+            <param name="mapMda">   The Manufacturer Data Array in a name/value pair list. </param>
+            <param name="passcode"> The passcode that allows changing of "reserved1". </param>
+            <returns> One result code: nzOK, nzInvalidParameterName, nzMdaParameterOutOfRange,
+		nzMissingParameterName. </returns>
+
+@internal
+@test1
+
+Test: Settings only affect driver.
+
+1. Connect to live HI. "Read" from HI.Note the MDA settings.
+2. Put a series of unusual settings throughout the MDA.
+3. Click "Set MDA".
+4. Click "Get MDA".The same values set in step 2 shall be returned.
+5. Click "Read".The parameters should come back as they were in step 1.
+
+Note: "reserved1" is the only parameter that is affected by the passcode, which is the same passcode put into "test" parameter in the legacy amps.
+
+@test1
+
+Test: Settings load and lock to DSP.
+
+1. Connect to live HI. "Read" from HI.Note the MDA settings.
+2. Put a series of unusual settings throughout the MDA.
+3. Click "Set MDA".
+4. Click "Load".
+5. Click "Lock"
+6. Repower aid and reconnect.
+7. Click "Read".The same values set in step 2 shall be returned.
+
+Note: "reserved1" is the only parameter that is affected by the passcode, which is the same passcode put into "test" parameter in the legacy amps.
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.IsAudioOn">
+            <summary>
+	Indicates if the driver is set to audio on or off. This driver variable
+	is set by `SetAudioState()`, `AudioOn()`, and `AudioOff()`. It does not 
+    necessarily indicate if the connected nanoDSP is muted or not.
+    
+	See the @ref GeneralProgrammingTips "General Tips" section for more information 
+    about how to use this method.
+</summary>
+            <returns> True if the driver variable is set to audio on, false if set to audio off. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericAudion8.G_Audion8_Common.SetAudioState(System.Boolean)">
+            <summary>
+	Sets a driver variable for the intended audio state. 
+
+	`IsAudioOn()` will return the current state of this driver variable.
+
+	See the @ref GeneralProgrammingTips "General Tips" section for more information 
+    about how to use this method.
+</summary>
+            <param name="on">  True for audio on, False for audio off. </param>
+            <returns> One result code: nzOK. </returns>
+
+@internal
+@test1 Audio On
+ 
+ 1. Detect  
+ 2. Enable "Audio On" check box next to "Set Audio State" button  
+ 3. Click "Read". All HI COMM buttons: Listening to HI, HI shall end up in Audio On state.  
+ 4. Repeat from step 1 using each HI COMM button in place of the "Read()" in step 83 until all other COMM buttons are tested. 
+
+@test2 Audio Off
+ 
+ 1. Detect  
+ 2. Disable "Audio On" check box next to "Set Audio State" button  
+ 3. Click "Read". All HI COMM buttons: Listening to HI, HI shall end up in Audio Off state.  
+ 4. Repeat from step 1 using each HI COMM button in place of the "Read()" in step 83 until all other COMM buttons are tested. 
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleResetInstrumentBondings">
+            <summary>
+	This deletes all bondings from the instrument. Must be connected to live instrument to
+	use this. After calling this, you must also delete the dongle bonding for this instrument
+	before disconnecting, or else you won't be able to connect to instrument in future 
+	with the same dongle.
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test
+
+Use tests on [the testing page](@ref pl2AdvertisingTests).
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleChangeEar(System.Int16)">
+            <summary>
+	This sets the ear-side the instrument should be worn.
+	
+	This is not necessarily what RL channel the device is connected to. 
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <param name="newSide">
+	This is the new orientation you want to program into the device. Options: -1 (unassigned),
+	0 (left), 1 (right).
+</param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test1 <b>Change Ear Verify</b>
+
+-# Set product type combo to "L200B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Set Left" button.
+-# Click "Get Device Info". Verify that `DeviceInfo` "Ear" field is "Left".
+-# Click "Set Right" button.
+-# Click "Get Device Info". Verify that `DeviceInfo` "Ear" field is "Right".
+-# Click "Clear" button.
+-# Click "Get Device Info". Verify that `DeviceInfo` "Ear" field is "Unknown".
+-# Click "Set Left" button.
+-# Repower HI.
+-# Click "Connect".
+-# Click "Get Device Info". Verify that `DeviceInfo` "Ear" field is "Left".
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleConvertBatteryToLevel(System.Int32)">
+            <summary> Converts the battery value to a meaninful value. The battery value is returned by  
+		  ScanInfo or `GenericAudion8BLE::G_Audion8BLE::BleGetBattery`. </summary>
+            <param name="battery"> The battery value returned by ScanInfo or `GenericAudion8BLE::G_Audion8BLE::BleGetBattery`. </param>
+            <returns> A meaningful level from the enumeration `BatteryLevel`. </returns>
+
+@internal
+@test1 <b>Base</b>
+
+-# BLE Connect to HI. 
+-# Click "Get Battery Level". This with display the value returned from 
+`G_Audion8BLE::BleGetBattery()` then also the level converted with
+`G_Audion8BLE::BleConvertBatteryToLevel()`. Verify that these line up according to
+the `BatteryLevel` enumeration.
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleSetUIS(GenericAudion8BLE.UisStruct)">
+            <summary>
+	Please read [User Information Service Details](@ref A8UisIssues) before using this method.
+	
+	Sets the program and VC Position in instrument.
+
+	`SetRlChannel()` sets which device this method acts on. 
+	
+	When simulating this does not set the values that will be returned by
+	`BleGetUIS()`.
+	
+	Changes made here will also update the active program returned from `GetActiveProgram()`
+	and the "VC_pos" returned from `GetConfigs()`. 
+</summary>
+            <param name="uis"> The BLE user information service data. </param>
+            <returns> 
+	One result code: nzOK, nzBadArgument, nzWrongProgrammer, nzNotInitialized, 
+	nzBleSideNotConnected, nzProgrammerTimeout.
+</returns>
+
+@internal
+@test1 <b>Base</b>
+
+-# BLE Connect to HI. HI must be set up for 4 programs and have a VC enabled.
+-# Select the "BLE UIS" tab.
+-# Click "Get User Interface Service".
+-# Change the "Active Program" value.
+-# While listening to the HI, click the "Set User Interface Service" button.
+-# Repeat the last 2 steps for other values over the valid range.
+-# Change the "Active Program" value to an out of range value.
+-# While listening to the HI, click the "Set User Interface Service" button.
+-# Click "Get User Interface Service". The "Active Program" value shall update 
+   to the last valid value set.
+-# Change the "VC Level" value.
+-# While listening to the HI, click the "Set User Interface Service" button.
+-# Repeat the last 2 steps for other values over the valid range.
+-# Change the "VC Level"" value to an out of range value.
+-# While listening to the HI, click the "Set User Interface Service" button.
+-# Click "Get User Interface Service". The "VC Level" value shall update 
+   to the highest valid value in range.
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleGetUIS(GenericAudion8BLE.UisStruct)">
+            <summary>
+	Please read [User Information Service Details](@ref A8UisIssues) before using this method.
+	
+	Quickly gets the status from the instrument by returning the UisStruct data object, 
+	which includes volume control position and active program.
+	 
+	`SetRlChannel()` sets which device this method acts on. 	
+</summary>
+            <param name="uis"> The BLE user information service data. </param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected, 
+	nzProgrammerTimeout. 
+</returns>
+
+@internal
+@test
+
+Tested under `G_Audion8BLE::BleSetUIS()`.
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleGetDeviceInfo(GenericAudion8BLE.DeviceInfo)">
+            <summary>
+	This returns the details about the device. It can only be called after `BleConnect()` is
+	successful. Either `BleGetDeviceInfo()` or `Detect()` must be called after `BleConnect()`
+	for the driver to configure the amp type correctly.
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <param name="info"> The information. </param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected, 
+	nzProgrammerTimeout. 
+</returns>
+
+@internal
+@test1 <b>Normal use</b>
+
+-# Set product type combo to "L200B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Get Device Info". Verify that each of the `DeviceInfo` fields are correct, 
+except for "Ear", which is tested under `G_Audion8BLE::BleChangeEar()`.
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleDisconnect">
+            <summary>
+	When done with a session, use this to disconnect from the device. 
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <returns>
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected, nzProgrammerError,
+	nzProgrammerTimeout.
+</returns>
+
+@internal
+@test
+
+Tested under `G_Audion8BLE::BleConnect()`.
+</member>
+        <member name="M:GenericAudion8BLE.G_Audion8BLE.BleConnect(GenericCommon.ScanInfo)">
+            <summary>
+	Once you've found a BLE device you want to connect to, use this to connect to the device
+	and start reading and writing to it. BleConnect takes care of connecting and setting the
+	amp type in the Generic Driver. `GetAmpTypeDetected()` will report the connected
+	amp type after `BleConnect()`.
+	
+	 `SetRlChannel()` sets which side the device is	connected to.
+</summary>
+            <param name="device">
+	The data for the device returned from scan updates callback.
+</param>
+            <returns>
+	One result code: nzOK, nzBadArgument, nzWrongProgrammer, nzNotInitialized, nzBleSideNotConnected,
+	nzBleSideAlreadyConnected, nzBleConnectToDeviceFailed.
+</returns>
+
+@internal
+@test1 <b>Normal use</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+
+@test1 <b>Out of range Reconnect use</b>
+
+-# Set product type combo to "L155B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# With the aid still powered, walk the aid outside the BLE range then walk the aid back into range. 
+   Shall receive a Device Disconnected Callback in the log within some short amount of time.
+-# Click "Connect" and shall receive a connect successful in the log.
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+   
+@test1 <b>Forced Reconnect use</b>
+
+-# Set product type combo to "L200B"
+-# Set programmer type to "BgBLE"
+-# On "BLE Manage" tab, click "Start Scan".
+-# Click "Stop Scan" when HI under test ScanInfo shows in log.
+-# Click "Connect" to HI under test. Expect successful connect.
+-# Click "Disconnect" button. Shall NOT receive a Device Disconnected Callback in the log
+-# Click "Connect" and shall receive a connect successful in the log. 
+   Now all COMM operations shall work normally (Read, Load, Play Tone, etc).
+</member>
+        <member name="T:GenericAudion8BLE.G_Audion8BLE">
+            <summary>
+	The G_Audion8 class contains the Audion8 and Audion8_BLE specific functionalities.
+</summary>
+            <remarks>
+	The parameters returned from `GetStatus()` are updated with the live program in the
+	device every time a `Read()` or `GetUis()` is used and during any UIS notifications.
+</remarks>
+        </member>
+        <member name="T:GenericAudion8BLE.BatteryLevel">
+            <summary> This is the voltage level shown in meaningful terms to an end user. </summary>
+        </member>
+        <member name="T:GenericAudion8BLE.UisStruct">
+            <summary>
+	User Interface Service data structure. Used by `G_Audion8::BleGetUIS()` to quickly get status of instrument.
+	Used by	`G_Audion8::BleSetUIS()` to set certain characteristics.
+</summary>
+        </member>
+        <member name="T:GenericAudion8BLE.DeviceInfo">
+            <summary> This is device specific information. Use `G_Audion8::BleGetDeviceInfo()` to get this information
+	after connecting to a device. </summary>
+        </member>
+        <member name="T:GenericAudion8.G_Audion8">
+            <summary>
+	The G_Audion8 class contains the Audion8 specific functionalities.
+</summary>
+            <remarks>
+	The parameters returned from `GetStatus()` are updated with the live program in the
+	device every time a `Read()` is used.
+</remarks>
+        </member>
+        <member name="T:GenericAudion8.G_Audion8_Common">
+            <summary>
+	The G_Audion8_Common abstract class contains all functionalities common to all Audion 8
+	amp type variants.
+</summary>
+            <remarks>
+	The parameters returned from `GetStatus()` are updated with the live program in the
+	device every time a `Read()` or `GetUis()` is used and during any UIS notifications.
+</remarks>
+        </member>
+        <member name="T:GenericAudion8.VoicePromptLanguages">
+            <summary> Values that represent ear voice prompt options for that will appear in Detect Info when the amp type is an Audion8 variant. </summary>
+        </member>
+        <member name="T:GenericAudion8.EarMoldOptions">
+            <summary> Values that represent ear mold options for `G_Audion8::AutofitLinear()`. </summary>
+        </member>
+        <member name="T:GenericAudion8.UseCrOptions">
+            <summary> `UseCR` in `TargetLinear` is a bit field. This enum can be used to easily 'bitwise or' together the options you want. </summary>
+            <remarks> 
+For example: 
+~~~
+TargetLinear target = new TargetLinear();
+target.UseCR = UseCrOptions.UseGivenCrValues | UseCrOptions.UsePresetTkValues;
+~~~
+</remarks>
+        </member>
+        <member name="T:GenericAudion8.TargetLinear">
+            <summary> Autofit Targets structure used by `G_Audion8::AutofitLinear()`. </summary>
+        </member>
+        <member name="M:GenericPacked.GetA8BleLoadByteArray(GenericPacked.LoadData*)">
+            <summary> 
+		  Gets load pack table in a byte array for Audion8 BLE in 
+		  format for mobile app use.  You must have loaded programs, configs, 
+		  and MDA with desired parameter data first, or read from a device 
+		  to get desired parameter data.
+</summary>
+            <param name="data"> [out] The BLE load byte array. </param>
+            <returns> status code </returns>
+        </member>
+        <member name="M:GenericDriver.WriteProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SB">
+            <summary> Writes a program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. </summary>
+            <param name="filePath">    Full pathname of the file. </param>
+            <param name="mapParams">   Map of the program parameters. </param>
+            <param name="mapConfig">   The map of the configuration parameters. </param>
+            <param name="mapMda">	   The map of the MDA parameters. </param>
+            <param name="LegacyNames"> (Optional) True to use legacy parameter names. False uses Generic Driver parameter names. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="M:GenericDriver.ReadProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SBy">
+            <summary> Reads program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. 
+</summary>
+            <remarks>
+Requirements:
+-# First few lines: Header, file format version
+-# AlgVer lines next.
+-# Configs next. Can be in any order
+-# Program Programs next, each program listing in order of program number. 
+   The order of the parameters in a program can be in any order.
+</remarks>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams"> [in,out] If non-null, options for controlling the map. </param>
+            <param name="mapConfig"> [in,out] If non-null, the map configuration. </param>
+            <param name="mapMda">    [in,out] If non-null, the map mda. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="T:Enums.UserEventCodes">
+            <summary>
+Itemized codes for User Event datalog.
+</summary>
+@anchor UserEventCodesEnums
+</member>
+        <member name="T:Enums.errorCode_eMiniTec">
+            <summary> 
+	The errorCode enumerations are specific errors for eMiniTec programmers.
+	
+	These are errors returned from the eMiniTec driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+Hardware Versions:	
+-* eMiniTec1 = old smaller programmer with no lights on it.
+-* eMiniTec2 = slightly larger programmer with lights on it for power and left / right activity.
+
+ </summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="InvalidHandle_OR_I2CnotCapable"> (1) Invalid handle (eMiniTec1 only), or no I2C capable programmer found. </param>
+            <param name="DeviceNotFound_OR_InvalidBaudRate"> (2) Device not found (eMiniTec1 only), or invalid baud rate (eMiniTec2 only): valid range: 400 to 400000. </param>
+            <param name="DeviceNotOpened"> (3) Device not opened. </param>
+            <param name="InputOutputError"> (4) Input/Output error. </param>
+            <param name="InsufficientResources"> (5) Insufficient resources. </param>
+            <param name="DeviceNotOpenedForErase"> (8) Device not opened for erase. </param>
+            <param name="DeviceNotOpenedForWrite"> (9) Device not opened for write. </param>
+            <param name="FailedToWriteDevice"> (10) Failed to write device. </param>
+            <param name="OtherError"> (18) Other error. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_A"> (120) Get Timing: Number of bytes written does not match requested. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_B"> (220) Get Timing: Number of bytes read does not match requested. </param>
+            <param name="ReadWriteUnmatchedWriteByteCount_A"> (140) Read/Write: Number of bytes written does not match requested. </param>
+            <param name="ReadWriteUnmatchedReadByteCount_B"> (240) Read/Write: Number of bytes read does not match requested. </param>
+            <param name="GetTimingDataTransferError_A"> (500) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingDataTransferError_B"> (501) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingSyncToInstrumentError_A"> (502) Get Timing: unable to sync with instrument. </param>
+            <param name="GetTimingSyncToInstrumentError_B"> (503) Get Timing: unable to sync with instrument. </param>
+            <param name="InvalidTimingValues"> (520) Read/Write: Invalid timing values. </param>
+            <param name="ReadTimeout"> (530) Read timeout. </param>
+            <param name="ReadWriteDataTransferError_A"> (540) Read/Write: Programmer to PC data transfer error. </param>
+            <param name="ReadWriteDataTransferError_B"> (550) Read/Write: Programmer to PC data transfer error. </param>
+        </member>
+        <member name="T:Enums.errorCode_NoahLink">
+            <summary> 
+	The errorCode enumerations for NOAHlink programmer specific errors. 
+
+	These are errors returned from the NOAHlink driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver if 'GenericCommon::G_Common::GetLastInterfaceError()' is used.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="BadParameter"> (1) Bad parameter to function. </param>
+            <param name="NotInitialized"> (2) Library not initialized. </param>
+            <param name="Initialized"> (3) Library already initialized. </param>
+            <param name="InitializeTimeout"> (16) Transaction timed out at start. </param>
+            <param name="FramingError"> (17) Transaction failed due to framing problem. </param>
+            <param name="NoDriver"> (256) NOAHlink drivers not installed. </param>
+            <param name="NoDevice"> (257) No NOAHlink device present. </param>
+            <param name="InUse"> (258) NOAHLink in use by other software. </param>
+            <param name="UnexpectedError"> (65535) Unexpected error occurred. </param>
+        </member>
+        <member name="T:Enums.errorCode_HIPRO">
+            <summary> 
+	The errorCode enumerations for Hi-Pro programmer specific errors. 
+
+	These are errors returned from the Hi-Pro driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+	The errors listed here are from the Hipro 4.1 SDK.
+</summary>
+            <param name="NoError"> (0) No error. </param>
+            <param name="HiproFramingError"> (010) Framing error reported from HI-PRO. </param>
+            <param name="ReceiverOverrun"> (011) Receiver overrun error reported from HI-PRO. </param>
+            <param name="ReceiverNoiseOnLine"> (012) Receiver noise on line error reported from HI-PRO. </param>
+            <param name="ReceiverTimeout"> (015) Receiver timeout error reported from HI-PRO. </param>
+            <param name="InvalidMessageNumber"> (020) Invalid message number reported from HI-PRO. </param>
+            <param name="InvalidMessageHeader"> (021) Invalid message header reported from HI-PRO. </param>
+            <param name="InvalidData"> (022) Invalid data reported from HI-PRO. </param>
+            <param name="MessageTermination"> (023) Message termination error reported from HI-PRO. </param>
+            <param name="TooManyCharactersInArgument"> (030) Too many characters in argument reported from HI-PRO. </param>
+            <param name="TooFewDataInStreamArgument"> (031) Too few data in stream argument reported from HI-PRO. </param>
+            <param name="TooManyDataInStreamArgument"> (032) Too many data in stream argument reported from HI-PRO. </param>
+            <param name="DataArgumentOutOfRange"> (033) Data argument out of valid range reported from HI-PRO. </param>
+            <param name="TooFewDataInDataBlock"> (034) Too few data in hex byte data block reported from HI-PRO. </param>
+            <param name="RequestedDataNotAvailable"> (035) Requested data is not available reported from HI-PRO. </param>
+            <param name="InvalidDataInInputBuffer"> (036) Invalid data in input buffer reported from HI-PRO. </param>
+            <param name="InvalidCommunicationMode"> (037) Invalid communication mode reported from HI-PRO. </param>
+            <param name="TimingTooFast"> (038) Timing too fast reported from HI-PRO. </param>
+            <param name="OutOfMemory"> (040) Out of memory reported from HI-PRO. </param>
+            <param name="LearnIsNotStarted"> (041) Learn is not started reported from HI-PRO. </param>
+            <param name="AlReadyInLearnMode"> (042) All ready in learn mode reported from HI-PRO. </param>
+            <param name="UndefinedOutputBitStream"> (043) No output bit stream defined reported from HI-PRO. </param>
+            <param name="UndefinedInputSpecification"> (044) No input specification defined reported from HI-PRO. </param>
+            <param name="UndefinedPinSpecification"> (045) No pin specification defined reported from HI-PRO. </param>
+            <param name="HiTimeout"> (046) H.I. timeout reported from HI-PRO. </param>
+            <param name="HiproDeviceAuthenticationFailed"> (047) The connected HI-PRO could not be authenticated (Device authentication). Please contact your supplier for assistance. </param>
+            <param name="InputBufferFull"> (048) Input Buffer is Full reported from HI-PRO. </param>
+            <param name="AdcTimeout"> (049) ADC timeout reported from HI-PRO. </param>
+            <param name="ChecksumError"> (050) Checksum error reported from HI-PRO. </param>
+            <param name="FlashVerifyError"> (051) Flash verify error reported from HI-PRO. </param>
+            <param name="InvalidDownloadedProgram"> (052) Invalid downloaded program reported from HI-PRO. </param>
+            <param name="UndefinedError"> (099) Undefined error reported from HI-PRO. </param>
+            <param name="HiproUnresponsive"> (200) TIMEOUT""HI-PRO does not respond""Check power and RS232 connections. </param>
+            <param name="ErrorInWriteComm"> (201) Error in WriteComm?""GetCommError? returns %d. </param>
+            <param name="ErrorInOpenComm"> (202) Error in OpenComm?""COM port may be in use by another device. Try to change COMPort= in HIPRO.INI. </param>
+            <param name="ErrorInSetCommState"> (203) Error in SetCommState? </param>
+            <param name="ErrorInBuildCommDCB"> (204) Error in BuildCommDCB. </param>
+            <param name="UserWasNotLoggedIn"> (205) User was not logged in. </param>
+            <param name="HiproHasBeenReset"> (206) HI-PRO has been reset ( settings lost ). </param>
+            <param name="InvalidDataReceivedFromHipro"> (207) Invalid data received from HI-PRO. </param>
+            <param name="InvalidHeaderReceivedFromHipro"> (208) Invalid header received from HI-PRO. </param>
+            <param name="TooBigOfStreamReceivedFromHipro"> (209) Too big stream received from HI-PRO. </param>
+            <param name="OutOfRangeNumericsReceivedFromHipro"> (210) Numerics received from HI-PRO is out of range. </param>
+            <param name="UnterminatedDataReceivedFromHipro"> (211) No terminator in data from HI-PRO. </param>
+            <param name="IncompleteBlockReceivedFromHipro"> (212) Incomplete block received from HI-PRO. </param>
+            <param name="ErrorInReadComm"> (213) Error in ReadComm?""GetCommError? returns %d. </param>
+            <param name="UnexpectedDataReceivedFromHipro"> (214) Unexpected data from HI-PRO. </param>
+            <param name="BadCheckSumInDataReceivedFromHipro"> (215) Bad CheckSum? in data received from HI-PRO. </param>
+            <param name="ErrorInCloseComm"> (216) Error in CloseComm? </param>
+            <param name="BadParameterSendToInstrumentDriver"> (217) Bad Parameter send to instrument driver. </param>
+            <param name="VBatLow"> (218) VBat low. Disconnect HI from HI-PRO. </param>
+            <param name="SelfTestStatusError"> (219) Self test status error. </param>
+            <param name="ReceiverOverflow"> (221) Receiver overflow""Input buffer too small or not emptied. </param>
+            <param name="Overrun"> (222) Overrun""Interrupts disabled too long time. Try lower baudrate.. </param>
+            <param name="ParityError"> (223) Parity error. </param>
+            <param name="DriverFramingError"> (224) Framing error""Wrong instrument connected or instrument turned off. </param>
+            <param name="BreakDetected"> (225) Break detected""Wrong instrument connected or instrument turned off. </param>
+            <param name="TransmissionQueueWasFull"> (226) Transmission queue was full""Output buffer too small. </param>
+            <param name="UnsupportedRequestedMode"> (227) Requested mode is not supported, or the idComDev parameter is invalid. </param>
+            <param name="TransmissionQueueNeverEmpties"> (228) Transmission queue never empties! Maybe IRQ conflict. </param>
+            <param name="DriverAuthenticationFailed"> (229) The connected HI-PRO could not be authenticated (PC Driver authentication). Please contact your supplier for assistance. </param>
+            <param name="UnknownError"> (255) Unknown error" </param>
+        </member>
+        <member name="T:Enums.errorCode_BLEBG">
+            <summary> 
+	The errorCode enumerations for Bluegiga BLE programmer specific errors. 
+	
+	These are errors returned from the Bluegiga driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="ble_err_success"> (0) No error. </param>
+            <param name="ble_err_invalid_param"> (384) Command contained invalid parameter. </param>
+            <param name="ble_err_wrong_state"> (385) Device is in wrong state to receive command. </param>
+            <param name="ble_err_out_of_memory"> (386) Device has run out of memory. </param>
+            <param name="ble_err_not_implemented"> (387) Feature is not implemented. </param>
+            <param name="ble_err_invalid_command"> (388) Command was not recognized. </param>
+            <param name="ble_err_timeout"> (389) Command or Procedure failed due to timeout. </param>
+            <param name="ble_err_not_connected"> (390) Connection handle passed is to command is not a valid handle. </param>
+            <param name="ble_err_flow"> (391) Command would cause either underflow or overflow error. </param>
+            <param name="ble_err_user_attribute"> (392) User attribute was accessed through API which is not supported. </param>
+            <param name="ble_err_invalid_license_key"> (393) No valid license key found. </param>
+            <param name="ble_err_command_too_long"> (394) Command maximum length exceeded. </param>
+            <param name="ble_err_out_of_bonds"> (395) Bonding procedure can't be started because device has no space
+									left for bond. </param>
+            <param name="ble_err_bt_error_success"> (512) Command completed successfully. </param>
+            <param name="ble_err_bt_bt_error_authentication_failure"> (517) Pairing or authentication failed due to incorrect
+		results in the pairing or authentication procedure. This could be due to an incorrect PIN or Link Key. </param>
+            <param name="ble_err_bt_pin_or_key_missing"> (518) Pairing failed because of missing PIN, or authentication failed
+											 because of missing Key. </param>
+            <param name="ble_err_bt_bt_error_memory_capacity_exceeded"> (519) Controller is out of memory. </param>
+            <param name="ble_err_bt_connection_timeout"> (520) Link supervision timeout has expired. </param>
+            <param name="ble_err_bt_connection_limit_exceeded"> (521) Controller is at limit of connections it can support. </param>
+            <param name="ble_err_bt_bt_error_command_disallowed"> (524) Command requested cannot be executed because the Controller
+							is in a state where it cannot process this command at this time. </param>
+            <param name="ble_err_bt_bt_error_invalid_command_parameters"> (530) Command contained invalid parameters. </param>
+            <param name="ble_err_bt_bt_error_remote_user_terminated"> (531) User on the remote device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_by_local_host"> (534) Local device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_ll_response_timeout"> (546) Connection terminated due to link-layer procedure timeout. </param>
+            <param name="ble_err_bt_bt_error_ll_instant_passed"> (552) Received link-layer control packet where instant was in the past. </param>
+            <param name="ble_err_bt_bt_error_controller_busy"> (570) Operation was rejected because the controller is busy and
+												   unable to process the request. </param>
+            <param name="ble_err_bt_bt_error_unacceptable_connection_interval"> (571) Remote evice terminated the connection
+																	because of an unacceptable connection interval. </param>
+            <param name="ble_err_bt_bt_error_directed_advertising_timeout"> (572) Directed advertising completed without a
+																connection being created. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_due_to_mic_failure"> (573) Connection was terminated because
+											the Message Integrity Check (MIC) failed on a received packet. </param>
+            <param name="ble_err_bt_bt_error_connection_failed_to_be_established"> (574) LL initiated a connection but the connection
+									has failed to be established. Controller did not receive any packets from remote end. </param>
+            <param name="ble_err_smp_passkey_entry_failed"> (769) The user input of passkey failed, for example, the user canceled the operation. </param>
+            <param name="ble_err_smp_oob_not_available"> (770) Out of Band data is not available for authentication. </param>
+            <param name="ble_err_smp_authentication_requirements"> (771) The pairing procedure cannot be performed as
+								 authentication requirements cannot be met due to IO capabilities of one or both devices. </param>
+            <param name="ble_err_smp_confirm_value_failed"> (772) The confirm value does not match the calculated compare value. </param>
+            <param name="ble_err_smp_pairing_not_supported"> (773) Pairing is not supported by the device. </param>
+            <param name="ble_err_smp_encryption_key_size"> (774) The resultant encryption key size is insufficient for the security
+											   requirements of this device. </param>
+            <param name="ble_err_smp_command_not_supported"> (775) The SMP command received is not supported on this device. </param>
+            <param name="ble_err_smp_unspecified_reason"> (776) Pairing failed due to an unspecified reason. </param>
+            <param name="ble_err_smp_repeated_attempts"> (777) Pairing or authentication procedure is disallowed because too little
+										 time has elapsed since last pairing request or security request. </param>
+            <param name="ble_err_smp_invalid_parameters"> (778) The Invalid Parameters error code indicates: the command length is
+											  invalid or a parameter is outside of the specified range. </param>
+            <param name="ble_err_last"> (779) Unkown. </param>
+            <param name="ble_err_att_invalid_handle"> (1025) The attribute handle given was not valid on this server. </param>
+            <param name="ble_err_att_read_not_permitted"> (1026) The attribute cannot be read. </param>
+            <param name="ble_err_att_write_not_permitted"> (1027) The attribute cannot be written. </param>
+            <param name="ble_err_att_invalid_pdu"> (1028) The attribute PDU was invalid. </param>
+            <param name="ble_err_att_insufficient_authentication"> (1029) The attribute requires authentication before it can be read or written. </param>
+            <param name="ble_err_att_request_not_supported"> (1030) Attribute Server does not support the request received from the client. </param>
+            <param name="ble_err_att_invalid_offset"> (1031) Offset specified was past the end of the attribute. </param>
+            <param name="ble_err_att_insufficient_authorization"> (1032) The attribute requires authorization before it can be read or written. </param>
+            <param name="ble_err_att_prepare_queue_full"> (1033) Too many prepare writes have been queued. </param>
+            <param name="ble_err_att_att_not_found"> (1034) No attribute found within the given attribute handle range. </param>
+            <param name="ble_err_att_att_not_long"> (1035) The attribute cannot be read or written using the Read Blob Request. </param>
+            <param name="ble_err_att_insufficient_enc_key_size"> (1036) The Encryption Key Size used for encrypting this link is insufficient. </param>
+            <param name="ble_err_att_invalid_att_length"> (1037) The attribute value length is invalid for the operation. </param>
+            <param name="ble_err_att_unlikely_error"> (1038) The attribute request that was requested has encountered an error that was
+										  unlikely, and therefore could not be completed as requested. </param>
+            <param name="ble_err_att_insufficient_encryption"> (1039) The attribute requires encryption before it can be read or written. </param>
+            <param name="ble_err_att_unsupported_group_type"> (1040) The attribute type is not a supported grouping attribute as defined by a higher layer specification. </param>
+            <param name="ble_err_att_insufficient_resources"> (1041) Insufficient Resources to complete the request. </param>
+            <param name="ble_err_att_application"> (1152) Application error code defined by a higher layer specification. </param>
+        </member>
+        <member name="T:Enums.SerialNumberStyle">
+            <summary> Serial number style options used for encoding and decoding the serial number
+		  into the MDA. See methods `G_Common::EncodeSerialNumber()` and 
+		  `G_Common::DecodeSerialNumber()`. </summary>
+            <param name="TenCharacterAlphaNumeric"> Supports any ASCII character in all 10 positions. </param>
+            <param name="OneToSevenDigits"> Allows between 1 and 7 digits, numeric only. Includes a separate 2 numeric digit year field. </param>
+            <param name="SixDigits"> Must enter 6 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="SevenDigits"> Must enter 7 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="LetterPlusFiveDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A00098. </param>
+            <param name="LetterPlusFourDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A0204. </param>
+        </member>
+        <member name="T:Enums.side">
+@anchor sideEnum
+<summary> The side enumeration is used for things like SetRLChannel(). </summary><param name="EarLeft"> Right ear when using an RL channel method. </param><param name="EarRight"> Left ear  when using an RL channel method. </param></member>
+        <member name="T:Enums.ampType">
+@anchor ampTypeEnum
+<summary> The ampType enumeration lists the amp types that the generic driver can detect. 
+		 Not all amp types are supported beyond detection; legacy drivers must be used in 
+		 those cases. To be used with `GetAmpTypeDetected()`.</summary><param name="typeNoAmp"> (-1) No amp type set</param><param name="typeNZ1"> (2) Digital One 2CH</param><param name="typeNZ2"> (5) Digital One 4CH AFC</param><param name="typeNZ2_Special"> (1000) Digital One 4CH</param><param name="typeNZ3"> (6) Digital One 4CH NR/NR+</param><param name="typeIntune"> (7) InTune</param><param name="typeSpin"> (9) Spin</param><param name="typeEthos"> (10) Ethos</param><param name="typeOvertus"> (1001) Overtus</param><param name="typeSpinNr"> (16) Spin NR</param><param name="typeEssential"> (18) Essential 150</param><param name="typeAudion6"> (20) Audion 6</param><param name="typeAudion4"> (21) Audion 4</param><param name="typeAudion8"> (23) Audion 8</param><param name="typeAudion8BLE"> (25) Audion8 BLE</param><param name="typeAudion16"> (24) Audion 16</param><param name="typeAudion16BLE"> (26) Audion16 BLE</param><param name="typeAudionS16BLE"> (29) Audion16S BLE </param><param name="typeAudion16h"> (28) Audion 16h</param><param name="typeAudion16BLEplus"> (30) Audion16 BLE Plus</param><param name="typeAudion16plus"> (31) Audion 16 plus</param></member>
+        <member name="T:Enums.interface_type">
+@anchor interface_typeEnum
+<summary> The interface_type enumeration lists the programmers that the generic driver supports. </summary></member>
+        <!-- Discarding badly formed XML document comment for member 'M:Programmer.readWrite(System.Int32!System.Runtime.CompilerServices.IsLong,System.Byte*,System.Byte*,System.UInt16,System.UInt16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion8BLE.G_Audion8BLE.BleGetBattery(System.Int32@)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:Programmer.readWrite(System.Int32!System.Runtime.CompilerServices.IsLong,System.Byte*,System.Byte*,System.UInt16,System.UInt16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion8.G_Audion8_Common.GetFrArray(System.Int16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericAudion8.G_Audion8_Common.WriteProgramFile(System.String,GenericCommon.ProgramsDictionary,GenericCommon.ParamsDictionary,GenericCommon.ParamsDictionary,System.Boolean)'. -->
+    </members>
+</doc>

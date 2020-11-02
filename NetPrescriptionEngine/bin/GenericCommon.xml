@@ -1,0 +1,2475 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        "GenericCommon"
+    </assembly>
+    <members>
+        <member name="M:GenericCommon.G_Common.BleGetRssi(System.Int16@)">
+            <summary> Gets the BLE RSSI of the instrument on the currently selected RL Channel. </summary>
+            <param name="rssi"> BLE RSSI in dB. </param>
+            <returns> A short. </returns>
+
+@internal
+@test1
+
+-# Set the instrument under test down a few inches from dongle.
+-# Connect a BLE instrument. 
+-# Click BLE Manage -&gt; "Get RSSI" several times. Expect slightly varying values (1-6 dB).
+-# Move the instrument under another foot or two from dongle.
+-# Click BLE Manage -&gt; "Get RSSI" several times. Expect a more negative value. The value might vary slightly (1-6 dB) on each "Get RSSI".
+</member>
+        <member name="M:GenericCommon.G_Common.BleGetConnectionStatus">
+            <summary> Gets the connection status of the currently selected RL Channel. 
+		  Similar to Connected(), however this only checks that the BLE handle in the
+		  BLE dongle is still alive. </summary>
+            <returns> nzOK, nzBleSideNotConnected, nzProgrammerError, nzProgrammerTimeout. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericCommon.G_Common.BleGetAddressLocal(System.String@)">
+            <summary> Returns the BLE address of the BLE Dongle. </summary>
+            <param name="address"> The BLE address of the BLE Dongle. </param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNoProgrammer, nzProgrammerError, 
+		  nzProgrammerTimeout, nzNullPointer. </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericCommon.G_Common.BleTestDongleAlive">
+            <summary> Tests if the BLE Dongle is functional. Similar to a typical "AT" -&gt; "OK" test. </summary>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNoProgrammer, nzProgrammerError, nzProgrammerTimeout,
+		  nzNullPointer </returns>
+
+@internal
+@test1
+
+</member>
+        <member name="M:GenericCommon.G_Common.BleGetDongleVersions(GenericCommon.DongleVersions)">
+            <summary> Returns versions of various components of the BLE Dongle. </summary>
+            <param name="vers"> The versions of various components in a DongleVersions structure. </param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNoProgrammer, nzProgrammerError, 
+		  nzProgrammerTimeout, nzNullPointer. </returns>
+
+@internal
+@test1
+
+-# Plug in dongle.
+-# BLE Manage -&gt; "Get Dongle Versions". Expect the data types listed in `DongleVersions` enum to
+populate with values. 
+-# Plug in a different dongle with different versions.
+-# BLE Manage -&gt; "Get Dongle Versions". Expect the data types listed in `DongleVersions` enum to
+populate with the different expected values. 
+</member>
+        <member name="M:GenericCommon.G_Common.BleReset(System.Boolean)">
+            <summary>
+	Resets the BLE dongle.
+	
+	Hard reset of the dongle clears it's white-list, soft reset doesn't.
+</summary>
+            <param name="useSoftReset"> true = soft reset of dongle, false = hard reset of dongle. </param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNoProgrammer, nzProgrammerError, 
+		  nzProgrammerTimeout. </returns>
+
+@internal
+@test1 
+
+If the system ever gets in a locked up or other bad state, using one of these resets shall fix the problem 
+if due to the PC side of things. Re-powering the aid should fix any issues on the aid side.
+
+@test2 
+
+TODO: devise test steps. Old steps no longer valid because white listing and Reconnect removed.
+</member>
+        <member name="M:GenericCommon.G_Common.BleGetNumBonds(System.Int16@)">
+            <summary>
+	Queries the dongle for the number of device bonds stored in dongle memory, and returns the
+	result. The RL Channel selected is irrelevant. Programmer must be BLE to read from the
+	live dongle.
+</summary>
+            <param name="count"> [in,out] Reference variable that returns the number of bonds. </param>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized, 
+	nzProgrammerError, nzProgrammerTimeout.
+</returns>
+
+ @internal
+<b> TEST </b>
+Use tests for BleDeleteBonding().
+
+@internal
+@test1
+
+Use test for `BleDeleteAllBondings()`.
+</member>
+        <member name="M:GenericCommon.G_Common.BleDeleteAllBondings">
+            <summary>
+	This deletes all bondings from the dongle. Do not need to be connected to use this.
+	Programmer must be BLE to affect the dongle.
+</summary>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized.
+</returns>
+
+@internal
+@test1 <b>Audion8BLE</b>
+
+This method only matters for Audion8BLE.
+
+-# Connect to up to 8 different devices so that using the "Get Number Dongle Bonds" returns the expected count. 
+-# Unplug and replug dongle in then use "Get Number Dongle Bonds" to verify count remains.
+-# Clean start (no device connected, close test app).
+-# Click "DELETE All Dongle Bondings". 
+-# Click "Get Number Dongle Bonds" and should return 0 (zero).
+
+Deeper testing on [the testing page](@ref pl2AdvertisingTests)
+</member>
+        <member name="M:GenericCommon.G_Common.BleDeleteBonding">
+            <summary>
+	This deletes bonding of selected RL channel from the dongle. Do not need to be connected to 
+	an instrument to use this. Programmer must be BLE to affect the dongle. 
+	
+	`SetRlChannel()` sets which device this method acts on.
+</summary>
+            <returns> 
+	One result code: nzOK, nzWrongProgrammer, nzNotInitialized.
+</returns>
+
+@internal
+@test1 <b>Audion8BLE</b>
+
+This method only matters for Audion8BLE.
+
+-# Click "DELETE ALL Dongle Bondings". 
+-# Click "Get Number Dongle Bonds" and should return 0 (zero).
+-# Connect to a Audion8BLE device.
+-# Click "Get Number Dongle Bonds" and should return 1 (one).
+-# Click "Delete Dongle Bonding". 
+-# Click "Get Number Dongle Bonds" and should return 0 (zero).
+</member>
+        <member name="M:GenericCommon.G_Common.BleClearUisNotifyCallback">
+            <summary>
+	This method disables UIS notifications. It does this by clearing native callback. This
+	can be used whether you set up a native or managed callback. Use
+	`BleSetUisNotifyCallback()` to enabled UIS notifications again.
+</summary>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzProgrammerError. </returns>
+
+@internal
+@test1
+
+-# Check the box "UIS Notifications -&gt; Enabled"
+-# Start Scan. 
+-# Stop Scan. 
+-# Connect to aid. Note: "UIS Battery Level Notifications" shall appear in the log for some BLE amp types. 
+-# Adjust volume and program on aid. With each adjustment UIS Volume and UIS Program notifications shall appear in the log. 
+-# Un-check the "UIS Notifications -&gt; Enabled" check box. Now all of those notifications shall stop occurring.
+-# Check the UIS Notifications "Enabled" check box.  Now all of those notifications shall start occurring again.
+</member>
+        <member name="M:GenericCommon.G_Common.BleSetUisNotifyDelegate(GenericCommon.UisNotifyDelegate)">
+            <summary>
+This method sets up a delegate (managed callback) in your software to handle UIS 
+updates, which include changes to the volume control and battery level. 
+
+UIS updates through here will also updates all parameters returned from `GetStatus()`.
+ 
+For unmanaged (native) version callback, see `BleSetUisNotifyCallback()`.
+	
+The Interface Type must be set to BLE when you call this. The callback pointer will be
+maintained if you change programmer types.
+
+Related: `BleClearUisNotifyCallback()`.
+</summary>
+            <remarks>
+Best to call this at the same time you set up the other BLE callbacks.
+
+This method accepts a delegate. You create a method of that matches
+the signature of `UisNotifyDelegate`. Then you pass the pointer of that method into
+`BleSetUisNotifyDelegate()`. For example (C#): 
+
+~~~
+private void SetBleDelegates()
+{
+	///Set other BLE delegates in here too.
+	UisNotifyDelegate delegateUisNotify = new UisNotifyDelegate(HandleUisNotifications);
+	result = GDriver.BleSetUisNotifyDelegate(delegateUisNotify);
+}
+
+private void HandleUisNotifications(int side, int uis, int value)
+{
+	//write your handling code here.
+}
+~~~
+	
+Now whenever a UIS updates are generated from the hearing instrument, the Generic
+Driver will call your HandleUisNotifications() method.
+</remarks>
+            <param name="methodDelegate">
+	[in] The delegate (function pointer), of type `GenericCommon::UisNotifyDelegate`, to a method that  
+	will be called when UIS updates are generated by the hearing instrument.
+</param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzBadArgument. </returns>
+
+@internal
+@test1
+
+Use tests for `BleClearUisNotifyCallback()`. If get UIS updates in log, then this method was used
+to successfully set to the UIS notifications callback.
+</member>
+        <member name="M:GenericCommon.G_Common.BleSetScanUpdateDelegate(GenericCommon.ScanUpdateDelegate)">
+            <summary>
+This method sets up a delegate (managed callback) in your software to handle device
+updates. You use updates to build a list of devices that the user can connect to.
+	
+For unmanaged (native) version callback, see `BleSetScanUpdateCallback()`.
+
+The Interface Type must be set to BLE when you call this. The callback pointer will be
+maintained if you change programmer types.
+</summary>
+            <remarks>
+Set this delegate before starting BLE scanning. Best to call this at the same time you set 
+up the other BLE callbacks.
+	
+	
+This method accepts a delegate. You create a method that matches the
+signature of `ScanUpdateDelegate`. Then you pass the pointer of that method into
+`BleSetScanUpdateEventCallback()`. For example (C#): 
+
+~~~ 
+public void SetBleDelegates()
+{
+	///Set other BLE delegates in here too....
+	
+	ScanUpdateDelegate delegatepointerScanUpdate = new ScanUpdateDelegate(callbackTargetScanUpdate);
+	result = GDriver.BleSetScanUpdateDelegate(delegatepointerScanUpdate);
+
+}
+
+public void callbackTargetScanUpdate(GenericCommon::ScanInfo info)
+{
+	//write your handling code here.
+}
+~~~
+	
+Now whenever there are device updates, the Generic Driver will call your
+HandleScanUpdateEvent() method.
+</remarks>
+            <param name="methodDelegate">
+	[in] The delegate (function pointer), of type `GenericCommon::ScanUpdateDelegate`, to a method that will be
+	called every time a device is found while scanning.
+</param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzBadArgument. </returns>
+
+@internal
+@test1
+
+If get scan info listings in log, then this method was used
+to successfully set to the scan update callback.
+
+Use tests under "BleStartScan()". 
+</member>
+        <member name="M:GenericCommon.G_Common.BleSetDeviceDisconnectedDelegate(GenericCommon.DeviceDisconnectedDelegate)">
+            <summary>
+This method sets up a delegate (managed callback) in your software to handle device
+disconnects. You use this callback to display a message to the user or automatically 
+start some sort of reconnection process.
+	
+For unmanaged (native) version callback, see `BleSetDeviceDisconnectedCallback()`.
+
+The Interface Type must be set to BLE when you call this. The callback pointer will be
+maintained if you change programmer types.
+</summary>
+            <remarks>
+Set this delegate before using `BleConnect`. Best to call this at the same time you set
+up the other BLE callbacks.
+	
+This method accepts a delegate. You create a method that matches
+the signature of `DeviceDisconnectedDelegate`. Then you pass the pointer of that method
+into `BleSetDeviceDisconnectedDelegate()`. For example (C#):
+	
+~~~
+private void SetBleDelegates()
+{
+	///Set other BLE delegates in here too...
+	
+	DeviceDisconnectedDelegate delegatepointerDeviceDisconnected 
+	     = new DeviceDisconnectedDelegate(callbackTargetDeviceDisconnected);
+	result = GDriver.BleSetDeviceDisconnectedDelegate(delegatepointerDeviceDisconnected);
+	
+}
+
+private void callbackTargetDeviceDisconnected(int side)
+{
+	//write your handling code here.
+}
+ ~~~
+	
+Now whenever a device becomes disconnected, the Generic Driver will call your
+callbackTargetDeviceDisconnected() method.
+</remarks>
+            <param name="methodDelegate">
+	[in] The delegate (function pointer), of type `GenericCommon::DeviceDisconnectedDelegate`, to a method that  
+	will be called if a device becomes disconnected.
+</param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzBadArgument. </returns>
+
+@internal
+@test1
+
+If receive a device disconnected callback in C# test app,
+then this method was successfully used to wire up the disconnected callback.
+
+Use tests for `BleConnect(ScanInfo^ device)`. 
+</member>
+        <member name="M:GenericCommon.G_Common.BleStopScan">
+            <summary> This stops the BLE scanning process. </summary>
+            <returns> nzOK, nzWrongProgrammer. </returns>
+
+@internal
+@test1
+
+-# Start Scan. Should see listings of found devices in the log window. 
+-# Stop Scan. 
+-# Power on a new device. It shall not show up in the log window.
+</member>
+        <member name="M:GenericCommon.G_Common.BleIsAvailable(System.Int16@,System.Int16@,System.String,System.Int16,System.Int32,System.Int16)">
+            <summary>
+This overload of `BleIsAvailable()` is for COM applications, since the other overload won't return
+updated ScanInfo values via COM. Read the documentation on the other `BleIsAvailable()` overload
+for complete summary details.
+</summary>
+            <param name="result"> [Out] One result code: nzOK,nzProgrammerTimeout, nzBadArgumentnzNoProgrammer, nzWrongProgrammer,
+		  nzNotInitialized, nzProgrammerError. Same as is normally a return value. </param>
+            <param name="foundCount"> [Out] How many times out of `averageOverCount` waits for the advertisement
+						  the advertisement has been found. </param>
+            <param name="giveUpCount"> [In] After how many timeouts to give up. In other words, if fail to find 
+ 							the instrument `giveUpCount` times, then return with `nzProgrammerTimeout`. 
+ 							`giveUpCount` must be within the range 1 to `averageOverCount`.</param>
+            <param name="timeout"> [In] How long to wait, in milliseconds, for an advertisement before giving up on 
+ 						that advertisement cycle. </param>
+            <param name="averageOverCount"> [In] How many advertisements to average the RSSI over. </param>
+            <returns> A `ScanInfo` object with average RSSI and all values updated to last values discovered. </returns>
+
+@internal
+@test1
+
+Use test steps from other `BleIsAvailable()`. This version of `BleIsAvailable()` will only be used in the MFC GD test app.
+
+Extra step: When reviewing the test results, the MFC GD test app has a few unit tests. Review the results in the log: did 
+the unit tests pass or fail?
+</member>
+        <member name="M:GenericCommon.G_Common.BleIsAvailable(GenericCommon.ScanInfo@,System.Int16@,System.Int16,System.Int32,System.Int16)">
+            <summary>
+	This overload of `BleIsAvailable()` is for .NET applications. These summary details apply
+	to both overloads.
+
+	This is meant as a helper for reconnecting instruments that have become disconnected.
+	It allows you to check if the instrument has good RSSI before connecting.
+	Test the result for `nzProgrammerTimeout`. If checking return value for `nzProgrammerTimeout`
+	and ignoring the ErrorQueue, for only this command, then call ClearErrorQueue(). That will
+	keep this error from being interpreted as an error for the next driver call.
+	
+	bleIsAvailable tests to see if a specific hearing instrument is available based on the 
+	`Address` passed in.
+	It will update the RSSI in parameter `device` with the averaged RSSI based on 
+	`averageOverCount` advertisements received from the hearing instrument .
+	
+	The RSSI will be set to 127 if the instrument is not found. `nzProgrammerTimeout` will be returned 
+	if the `timeout` has been exceeded and the hearing instrument has not been found.
+	
+	Example: If you get a Disconnected callback you could show a message 
+	"reconnecting to xxxxx" while you call IsAvailable(). 
+	If the HI is available, you would then call Connect.
+	If the HI is not available, you could tell the user "instrument not available" or
+    "instrument needs to be closer to dongle", depending on the results returned from IsAvailable.
+    
+    Suggested settings for reasonable test time and give up time if not found: 
+    giveUpCount = 2, timeout = 2000, averageOverCount = 5
+</summary>
+            <param name="device"> [In, Out] The Address and AmpType parameters must be filled in. The 
+					  RSSI will be updated to measured value or 127 if not found. </param>
+            <param name="foundCount"> [Out] How many times out of `averageOverCount` waits for the advertisement
+						  the advertisement has been found. </param>
+            <param name="timeout"> [In] How long to wait, in milliseconds, for an advertisement before giving up on 
+ 						that advertisement cycle. </param>
+            <param name="giveUpCount"> [In] After how many timeouts to give up. In other words, if fail to find 
+ 							the instrument `giveUpCount` times, then return with `nzProgrammerTimeout`. 
+ 							`giveUpCount` must be within the range 1 to `averageOverCount`.</param>
+            <param name="averageOverCount"> [In] How many advertisements to average the RSSI over. </param>
+            <returns> One result code: nzOK,nzProgrammerTimeout, nzBadArgumentnzNoProgrammer, nzWrongProgrammer,
+		  nzNotInitialized, nzProgrammerError. </returns>
+
+@internal
+@test1
+
+-# Power on an IntriCon BLE device. Try this for each IntriCon BLE device we support (Audion8BLE, Audion16BLE, etc)
+-# Click BLE Manage -&gt; "Start Scan".
+-# Click BLE Manage -&gt; "Stop Scan".
+-# Choose device under test from address list.
+-# Click BLE Manage -&gt; "Is Available?". Expect results that the device was found. Except for RSSI, all the info shown shall match the ScanInfo seen during Start Scan.
+-# Power down device under test.
+-# Click BLE Manage -&gt; "Is Available?". Expect results that the device was not available.
+</member>
+        <member name="M:GenericCommon.G_Common.BleStartScan(System.Boolean)">
+            <summary>
+	Use this to start BLE scanning. Before calling this you must create a instrument update
+	callback for notifications when new instruments are found during scanning.
+	
+</summary>
+            <param name="doDisconnect"> True disconnects any connected instruments before start scanning. </param>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNotInitialized. </returns>
+
+@internal
+@test1
+
+-# Power on all different types of IntriCon and other BLE devices.
+-# Click "Start Scan". 
+-# Evaluate the log. Every device found shall be listed there with it's full ScanInfo data. Only IntriCon devices shall appear. Audion8BLE ScanInfo is different than Audion16BLE ScanInfo. For the HI under test, verify that all this data is correct. 
+-# Connect to a device of each BLE IntriCon type. Change the data in the device via the location described below (usually MDA), then re-power the aid, start scan, and verify the data changed as expected.
+
+* "Address" equals expected address(same address seen in BLE spy tools such as Master Control Panel").
+* "Name" equals "L200B" or "L155".
+* "Serial Number" equals the Set Serial Number or encoded serial number. The Serial Number is stored in MDA0 - 4 (hidden from the GetMDA data in A16BLE).
+* "AmpType" equals 25 or 26.
+* "Ear" equals ear programmed with the "Set Ear" button on the BLE Manage tab.
+* "ManufacturerID" equals the MANF_ID MDA parameter.
+* "ModelID" equals the ModelID MDA parameter.
+* "RSSI" equals expected signal strength relative to aid distance and RF noise.The more negative the number the worse the signal strength is.
+</member>
+        <member name="M:GenericCommon.G_Common.BleStartScan">
+            <summary>
+	Use this to start BLE scanning. Before calling this you must create a instrument update callback 
+	for notifications when new instruments are found during scanning.
+	
+	`BleStartScan()` disconnects any known instruments from both sides before the scanning 
+	starts.
+</summary>
+            <returns> One result code: nzOK, nzWrongProgrammer, nzNotInitialized. </returns>
+
+@internal
+@test1
+
+Not tested in C# test app. Calls the same underlying code in driver as `G_Common::BleStartScan(bool doDisconnect)`.
+</member>
+        <member name="M:GenericCommon.G_Common.Error(G_Enums.errorCode)">
+@copydoc Error(short errorCode)
+
+@internal
+@test1
+
+Not tested in the C# app.
+</member>
+        <member name="M:GenericCommon.G_Common.Error(System.Int16)">
+            <summary>All methods that return error code values use values listed in `G_Enums::errorCode()`.
+This method converts those error code values to a user readable string. These
+error strings are in English and can be low level information. Therefore, their intention
+is for software developers an engineers, not end users.
+</summary>
+            <param name="errorCode"> 
+	[in] The `G_Enums::errorCode` value that you want returned in error string form.
+</param>
+
+@internal
+@test1
+
+Not tested in the C# app.
+</member>
+        <member name="M:GenericCommon.G_Common.DecodeSerialNumber(System.String@,System.String@,GenericCommon.ParamsDictionary,G_Enums.SerialNumberStyle)">
+            <summary> 
+This will decode the serial number from the `MDA` or detect data 
+based on the style selected. If you send detect data in, with "MANF_reserve", this
+method will decode the serial number from it. 
+		  
+This uses the amp type set by `Detect()` to verify valid serial number style is 
+being used. It will force serial number in specific cases.
+
+See the [Serial Number page](@ref ANCHOR_SERIAL_NUMBER) for more information. 
+</summary>
+            <param name="SerialNumber">	[out] The serial number to decode from the `mapMda`. </param>
+            <param name="YearCode"> [out] Two digit year code. Not used for the `TenCharacterAlphaNumeric` style. </param>
+            <param name="mapMda"> [in] Fill `mapMda` with values read from the nanoDSP and pass it into this method. </param>
+            <param name="Style"> [in] The serial number style to use for the decoding. See `ENUMNAMESPACE::SerialNumberStyle`. </param>
+            <returns> One result code: nzOK, nzBadArgument, nzFeatureNotSupportedByAmpType, nzMissingParameterName. </returns>
+
+@internal
+@test Detect
+
+This method now works with detect data, not just MDA data. It works on ALL amp types that the Generic Driver
+can detect. Therefore, all amp types must be tested with these steps.
+
+1. Connect HI of amp type under test.  
+2. Select the appropriate serial number style from the control next to the Serial Number Decode controls.  
+3. Click "Detect()". Verify the printed 'detect data' serial number is what is programmed in the HI.
+
+@test typeNoAmp
+
+If detect was not prior to use of this method, the amp type will be typeNoAmp. 
+
+-# Start app fresh, alternatively select the amp type again.
+-# Click "EncodeSerialNumber()". Should return nzAmpTypeRequired.
+
+@test Other
+
+Tested in `G_Common::EncodeSerialNumber()`.
+</member>
+        <member name="M:GenericCommon.G_Common.CloseInterface">
+            <summary> Closes the connection to the current interface (programmer). If BLE, any 
+		  known connected instruments will be disconnected. </summary>
+            <returns> One result code: nzOK, nzNotRead, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, or nzNoProgrammer. </returns>
+
+@internal
+@test1 <b>Wired Programmers</b>
+ 
+-# Start Test App.
+-# Connect HI to Left (these steps don't work for Right).
+-# Click "Detect" with success in log.
+-# Click Driver -&gt; "Driver Close" with success in log.
+-# Click "Detect" with nzNoInstrument or nzNoProgrammer error in log 
+  (Preferably nzNoProgrammer, but this isn't the case for all programmers.
+-# Click Driver -&gt; "Driver Init Only" with success.
+-# Click "Detect" with success in log.
+
+@test2 <b>Wireless BlueGigga</b>
+
+1. BgBLE: Connect to left and right devices.   
+2. Close test app.   
+3. Reopen test app.   
+4. Remove battery from both devices. Should NOT get any disconnected callbacks in the log.
+</member>
+        <member name="M:GenericCommon.G_Common.SetDebugMessageQueueClearBehavior(System.Boolean)">
+            <summary>
+	Sets Debug Message Queue clear behavior.  The debug message queue is for test and
+	debugging purposes only. The driver developer may insert messages into this queue.
+	
+	This is static: This sets the behavior once for all ear sides and amp types for the 
+	application session.
+</summary>
+            <param name="clearQueueOnEveryGet"> 
+  * true: Debug Queue is cleared on every GetDebugMessageQueue() call.
+  * false: All data is retained until manually cleared with ClearErrorQueue().
+</param>
+
+@internal
+@test1
+
+ Not tested in C# app. Must be tested by developer who adds in special debug messages.
+</member>
+        <member name="M:GenericCommon.G_Common.ClearDebugMessageQueue">
+            <summary>
+	Clears all messages from the Debug Message Queue.  The debug message queue is for test
+	and debuging purpose only. The driver developer may insert messages into this queue.
+</summary>
+
+@internal
+@test1
+
+ Not tested in C# app. Must be tested by developer who adds in special debug messages.
+</member>
+        <member name="M:GenericCommon.G_Common.GetDebugMessageQueue">
+            <summary>
+	Returns a list of debug strings created during all events since the Debug Message Queue
+	was last cleared.  The debug message queue is for test and debuging purpose only. The
+	driver developer may insert messages into this queue.
+</summary>
+            <returns> Nullptr if it fails or is empty, else the debug message queue. </returns>
+
+@internal
+@test1
+
+ Not tested in C# app. Must be tested by developer who adds in special debug messages.
+</member>
+        <member name="M:GenericCommon.G_Common.SetErrorQueueClearBehavior(System.Boolean)">
+            <summary>
+	Sets error queue clear behavior. This is static: This sets the behavior once for all 
+	ear sides and amp types for the application session.
+	
+	earErrorQueueOnEveryGet:
+</summary>
+            <param name="clearErrorQueueOnEveryGet"> 	
+* true: errorQueue is cleared on every GetErrorQueue call. 
+* false: All data is retained until manually cleared with ClearErrorQueue() or  
+ the error queue limit is reached.
+</param>
+
+@internal
+@test1
+
+Not tested in C# app.
+</member>
+        <member name="M:GenericCommon.G_Common.ClearErrorQueue">
+            <summary> Clears all messages from the error queue. </summary>
+
+@internal
+@test1
+
+Note: Any driver errors that print to the test app log use this method. The log will say
+"Driver Error from ...:" and follow with the error returned from the driver ErrorQueue.
+
+-# Connect wired programmer with one HI
+-# "Detect"
+-# Disconnect the HI
+-# "Audio On". Note number of error lines in log.
+-# "Audio On": {Expect: only one duplication of the error lines in log}
+-# "Audio On": {Expect: only one more duplication of the error lines in log}
+</member>
+        <member name="M:GenericCommon.G_Common.getErrorQueueSize_bytes">
+            <summary> Returns the size of memory in bytes that the error queue is using. </summary>
+            <returns> The error queue size in bytes. </returns>
+
+@internal
+@test1
+
+Not tested in C# app.
+</member>
+        <member name="M:GenericCommon.G_Common.GetErrorQueue">
+            <summary>
+	Returns a list of error strings created during all error events since the Queue was last
+	cleared.
+	
+	NOTE: this is English only and has no language translation capability. Multilingual
+	applications should handle the language details by utilizing the error values returned
+	from all methods.
+</summary>
+            <returns> Nullptr if it fails or no data, else the error queue. </returns>
+
+@internal
+@test1
+
+Any driver errors that print to the test app log use this method. The log will say
+"Driver Error from ...:" and follow with the error returned from the driver ErrorQueue.
+</member>
+        <member name="M:GenericCommon.G_Common.SetFileFloatPrecision(System.Byte)">
+            <summary> Sets file float precision for writing transducer files for all ears. 
+		  Defaults to 2 decimal places if you don't change it with this method.
+		  Affects `WriteTransducerFile()`. </summary>
+            <param name="precision"> How many decimal places for the desired precision. 
+						 precision = 2 prints 123.823837 as "123.82". </param>
+            <returns> nzOK </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.SetRLChannel(System.Int16)">
+            <summary>
+	`SetRLChannel` sets the channel or side of the programming interface to be used
+	 for communication and modeling.
+</summary>
+            <param name="channel"> A zero indexed value for which side to use: left = 0, right = 1.  </param>
+            <returns> nzOK or nzBadArgument. </returns>
+
+@internal
+@test1
+
+1. Connect binaurally and switch sides with the "Left/Right" radio buttons.
+2. Verify that display should follows the side change and that all COMM actions affect the selected side   
+  (Read, Load, AudioOff, Connected, etc…)
+3. Press the "Get RL Channel" button to make sure it matches the side last set from RL channel.  
+4. If the amp type includes Status Params, verify the "Interface_Side" matches.
+5. Repeat subset of steps 2-4 in various combinations.
+</member>
+        <member name="M:GenericCommon.G_Common.GetValidInterfaces_Str">
+            <summary> Gets string list of valid programmers for the current amp type object. 
+		  Useful for filling combo boxes and other user controls. </summary>
+            <returns> Nullptr if it fails, else the valid programmers list in string form. </returns>
+
+@internal
+@test1
+
+The Interface Type combo in the A16 Test App menu is filled from this. Changing amp types and 
+verifying that this combo contains the expected list for the amp type verifies this method.
+</member>
+        <member name="M:GenericCommon.G_Common.GetValidInterfaces">
+            <summary> Gets list of valid programmers for the current amp type object. </summary>
+            <returns> Nullptr if it fails, else the valid programmers list. </returns>
+
+@internal
+@test1
+
+-# Select amp in Amp Type combo in menu. 
+-# Driver -&gt; "Get Valid Interfaces". Verify this matches expected programmers
+and matches list in Programmers list combo in menu.
+</member>
+        <member name="M:GenericCommon.G_Common.getProgrammerVersionInformation">
+            <summary>
+	Returns a set of driver and programmer hardware information that is customized based on
+	the programmer. Any programmer that doesn't support this or Gen Driver code hasn't been
+	added for will return an empty object.
+</summary>
+            <returns> 
+A name/value string pair list.
+  - eMiniTec Return Values:
+    * eMiniTec_Firmware_Version (This also determines which eMiniTec hardware is attached.)
+      * 0 = No programmer
+      * 1 = original eMiniTec without datalogging
+      * 2 = original eMiniTec with datalogging
+      * 3 = internal development version eMiniTec2
+      * 4 = release version eMiniTec2
+    * eMiniTec_Driver_Version:  major.minor   
+</returns>
+
+@internal
+@test1
+
+-# Connect eMiniTec 1 or 2.
+-# Choose eMiniTec in programmer combo. Expect driver and firmware version to print.
+ 
+@test2
+
+-# Simulate or choose any programmer except eMiniTec
+-# "Programmer Version Information" button. Expect message like "no programmer information.."
+
+</member>
+        <member name="M:GenericCommon.G_Common.EminitecCalibrateTiming">
+            <summary>
+	EminitecCalibrateTiming runs the eMiniTec Get_Timing method that calibrates the clock in
+	the eMiniTec programmer to the clock in the instrument. Clocks between instruments are
+	close matching, allowing the same calibration to be used for both sides.
+	
+	This calibration is performed automatically when detect is called.
+	EminitecCalibrateTiming method is provided for special cases, such as not detecting
+	before other communication commands.
+</summary>
+            <returns> nzOK or nzWrongProgrammer. </returns>
+
+@internal
+@test1
+ //TODO: devise test
+</member>
+        <member name="M:GenericCommon.G_Common.GetEepromData">
+            <summary>
+	Loads data from ROM into RAM (effectively the same as re-powering instrument, but not 100%
+	the same).
+	
+	Audion 16: does not reload MDA data.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, or nzNoProgrammer. </returns>
+
+@internal
+@test1 <b>Recall Test</b>
+
+TODO: Can be differences in results amp to amp. List those differences.
+
+1. Make a number of changes across all programs and configs and MDA.   
+2. "Load" with "Everything" selected (<b>do not Lock</b>).
+3. "Get EEPROM Data".
+4. "Read" with "Everything" selected. The program params, configs, and MDA shall revert back to   
+   where they were originally before step 1 changes.
+</member>
+        <member name="M:GenericCommon.G_Common.SetToTest(System.Int16,System.Int16)">
+            <summary>
+	Sets the nanoDSP amplifier parameters to a linear condition for acoustic test
+	verification.
+</summary>
+            <param name="platformId"> The platform ID used for special purposes. Currently
+						  has no use. </param>
+            <param name="ManID">	  Manufacturer ID used for special purposes. Currently
+						  has no use. </param>
+            <returns> One result code: nzOK </returns>
+
+@internal
+@test1
+
+-# Simulate
+-# Detect
+-# Read Everything
+-# Driver -&gt; "Set to Test". Parameters shall update and shall be linear with 
+BEQs at max, and all special features off (AFC, Low Cut,  Expansion, etc).
+</member>
+        <member name="M:GenericCommon.G_Common.GetRecSaturation">
+            <summary>
+	Returns the current value of receiver saturation. See the antonym `SetRecSaturation()`.
+</summary>
+            <returns> The current receiver saturation. </returns>
+
+@internal
+@test1
+
+Tested in `SetRecSaturation()`
+</member>
+        <member name="M:GenericCommon.G_Common.SetRecSaturation(System.Int32!System.Runtime.CompilerServices.IsLong)">
+            <summary>
+	Sets the level at which the modeler starts to saturate. 883,883 (2.5Vpp converted to
+	uVrms) is the default Sat_Level based on our reference receiver. 
+	The default is set when an amp type object is constructed.
+	
+	A factor of 2 is a 6 dB change. Therefore, setting to 1,767,766 gives 6 dB more headroom over a setting of 
+	883,883. You can use dB voltage calculations to tune this:
+	
+	dB_Change_to_Saturation_level = 20 × log (RSat2/RSat1)
+	
+	Range: 88389 to 8838830.
+</summary>
+            <param name="RSat"> The new receiver saturation value to use. Range: 88389 to 8838830. </param>
+            <returns> nzOk or nzBadArgument. </returns>
+
+@internal
+@test <b>1 Saturation with MPO disabled.</b>
+
+-# Restart the test app.
+-# Choose Flat -52 mic table and Flat 90 rec table.
+-# Max out the BEQs and set the MPOs to index 0. 
+-# Set Matrix Gain to some low level, -35.
+-# Plot response. It should be a flat line. 
+-# Set Rec Saturation to it's lowest value.  Use GetRecSaturation to verify the value is set.
+-# Adjust the matrix gain up and plot the response, repeat this until limiting starts to appear in the response
+ [dB upward movement on graph doesn't match the dB increase in matrix gain]. You might need to reduce matrix gain 
+ off until you find the one index value where limiting appears. Note this matrix gain setting.
+-# Adjust the matrix gain up 6 dB and plot the response. The response should not move.
+   Note the response amplitude.
+-# Set the Rec Saturation to 2 times the value it was before. This will increase the saturation by 6 dB.
+   Use GetRecSaturation to verify the value is set.
+-# Set the Matrix Gain up by 4 dB and plot response. It shall have moved 4 dB higher.
+-# Set the Matrix Gain up by 1 dB and plot response. It shall have moved 1 dB higher.
+-# Set the Matrix Gain up by 1 dB and plot response. It shall not have moved from last setting. This is the new
+  saturation point.
+-# Repeat the last two steps until at max rec saturation value or at max matrix gain. The pattern shall be repeatable.
+
+@test <b>2 Saturation with MPO at max.</b>
+
+Expected results: Matches the results found with MPO off.
+
+-# Restart the test app.
+-# Choose Flat -52 mic table and Flat 90 rec table.
+-# Max out the BEQs and set the MPOs to index 0. 
+-# Set Matrix Gain to some low level, -35.
+-# Plot response. It should be a flat line. 
+-# Set Rec Saturation to it's lowest value. Use GetRecSaturation to verify the value is set.
+-# Adjust the matrix gain up and plot the response, repeat this until limiting starts to appear in the response
+ [dB upward movement on graph doesn't match the dB increase in matrix gain]. You might need to reduce matrix gain 
+ off until you find the one index value where limiting appears. Note this matrix gain setting.
+-# Adjust the matrix gain up 6 dB and plot the response. The response should not move.
+   Note the response amplitude.
+-# Set the Rec Saturation to 2 times the value it was before. This will increase the saturation by 6 dB.
+   Use GetRecSaturation to verify the value is set.
+-# Set the Matrix Gain up by 4 dB and plot response. It shall have moved 4 dB higher.
+-# Set the Matrix Gain up by 1 dB and plot response. It shall have moved 1 dB higher.
+-# Set the Matrix Gain up by 1 dB and plot response. It shall not have moved from last setting. This is the new
+  saturation point.
+-# Repeat the last two steps until at max rec saturation value or at max matrix gain. The pattern shall be repeatable.
+
+@test <b>3 Different Levels of MPO</b>
+
+Restart the test app. Repeat the steps as used for "MPO at max" using different levels of MPO limiting. 
+Expected results: the limiting will be x dB more limiting than when MPO at max, with x dB being the dB 
+parameter value indicated by the MPO index.
+
+@test <b>4 Random MPOs</b>
+
+-# Restart the test app.
+-# Max out the BEQs and set the MPOs to some random index.
+-# Set Matrix Gain to some level that shows considerable limiting. Screen capture this for reference.
+-# Set Rec Saturation to it's lowest value. Note that the saturation has reduced on the response.
+   Use GetRecSaturation to verify the value is set.
+-# Plot response. It should have moved lower in amplitude. 
+-# Set the Rec Saturation back to the default value. Verify that the saturation amount on the response
+   is the same as in step 2 (compared to the screen capture)
+-# Use GetRecSaturation to verify the value is set.
+</member>
+        <member name="M:GenericCommon.G_Common.GetRLChannel">
+            <summary>
+	`GetRLChannel` returns the channel or side of the programming interface being
+	 used for communication and modeling. See the antonym `SetRLChannel()`.
+</summary>
+            <returns> A zero indexed value for which side is in use: left = 0, right = 1. </returns>
+
+@internal
+@test1
+
+Test in `SetRLChannel()`.
+</member>
+        <member name="M:GenericCommon.G_Common.SetVcPosition_dB(System.Int16)">
+            <summary>
+	Sets the VC position in the driver for modeling purposes.
+	
+	This is useful for things such as modeling multiple VC positions without touching the amp.
+	
+	If no error occurs, the status parameter "Modeler_VC_Pos" will be updated and the modeler
+	will use the new value.
+</summary>
+            <param name="position">
+	A dB attenuation value of what to set the volume control index to.
+	This is range tested against the current VC configuration and must be 0 or a
+	negative number. Some way of setting the configuration parameters should be done
+	before calling this method. If not then nzNotInitialized will be returned.
+ </param>
+            <returns> One result code: nzOK, nzBadArgument, nzNotInitialized. nzBadArgument will be
+	returned if out of range position is requested. If the position requested is not a 
+	multiple of the step size, the closest position to the requested position will be set.
+</returns>
+
+@internal
+@test1
+
+Tested in "Autofit VC Verification" tab.
+</member>
+        <member name="M:GenericCommon.G_Common.SetVcPositionIndex(System.Int16)">
+            <summary>
+	Sets the VC position in the driver for modeling purposes.
+	
+	This is useful for things such as modeling multiple VC positions without touching the amp.
+	
+	If no error occurs, the status parameter "Modeler_VC_Pos" will be updated and the modeler
+	will use the new value.
+	
+	Warning: Make sure that the configuration parameters are set properly. This method uses
+	those parameters to validate the "Modeler_VC_Pos" is being set within range.
+</summary>
+            <param name="position"> 
+	A zero indexed indicator of what to set the volume control index to.
+	This is range tested against the current VC configuration and must be 0 or a
+	positive number. Some way of setting the configuration parameters should be done
+	before calling this method. If not then nzNotInitialized will be returned.
+</param>
+            <returns> One result code: nzOK, nzBadArgument, nzNotInitialized. nzBadArgument will be
+	returned if out of range position is requested. </returns>
+
+@internal
+@test1
+
+Tested in "Autofit VC Verification" tab.
+</member>
+        <member name="M:GenericCommon.G_Common.getVcMaxIndex">
+            <summary>
+	Returns the maximum possible VC Index based on the current configuration parameters in
+	the driver.
+</summary>
+            <returns> The maximum possible index value. </returns>
+
+@internal
+@test1
+
+Tested in "Autofit VC Verification" tab.
+</member>
+        <member name="M:GenericCommon.G_Common.getVcMaxDb">
+            <summary>
+	Returns the maximum possible VC value in dB based on the current configuration parameters
+	in the driver.
+</summary>
+            <returns> The maximum possible VC value in dB. </returns>
+
+@internal
+@test1
+
+Tested in "Autofit VC Verification" tab.
+</member>
+        <member name="M:GenericCommon.G_Common.getVcStepSizeDb">
+            <summary>
+	Returns the VC Steps size in dB based on the current configuration parameters in the
+	driver.
+</summary>
+            <returns> The VC step size in dB. </returns>
+
+@internal
+@test1
+
+Tested in "Autofit VC Verification" tab.
+</member>
+        <member name="M:GenericCommon.G_Common.SetProgram(System.Int16)">
+            <summary>
+	`SetProgram` sets the modeler program within the driver. The program in the nanoDSP is not
+	activated. This is useful for things like modeling all programs via `GetFrArray()` without
+	 activating the nanoDSP.
+</summary>
+            <param name="program"> A zero indexed indicator of which program to activate. </param>
+            <returns> nzOK or nzBadArgument. </returns>
+
+@internal
+NOTE: Testing this shall <b>not</b> change the live program in the HI.
+
+Tested under `G_Common::GetStatus()`.
+</member>
+        <member name="M:GenericCommon.G_Common.WriteTransducerFile(System.String,System.String,GenericCommon.SingleCollection)">
+            <summary> Writes a transducer file and using response and header passed in. 
+		  The format matches the legacy IntriCon microphone and receiver tables. 
+		  65 frequency points. </summary>
+            <param name="filePath"> Full pathname of the file. </param>
+            <param name="header">   The header -- first line that shows up in the file. </param>
+            <param name="response">
+	This data is backwards compatible with our legacy drivers, and is detailed in the @ref
+	ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK, nzBadArgument, nzExceptionOccured </returns>
+
+@internal
+@test1
+
+Not tested in C# test app. Has unit test.
+</member>
+        <member name="M:GenericCommon.G_Common.ReadTransducerFile(System.String,System.String@,GenericCommon.SingleCollection)">
+            <summary> Reads a transducer file and returns response and header found in file. 
+		  The format matches the legacy IntriCon microphone and receiver tables. 
+		  65 frequency points. </summary>
+            <param name="filePath"> Full pathname of the file. </param>
+            <param name="header">   [in,out] If non-null, the header. </param>
+            <param name="response">
+	This data is backwards compatible with our legacy drivers, and is detailed in the @ref
+	ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK, nzExceptionOccured </returns>
+
+@internal
+@test1
+
+Not tested in C# test app. Has unit test.
+</member>
+        <member name="M:GenericCommon.G_Common.ReadRecFileToModeler(System.String)">
+            <summary> Reads receiver table file to modeler. Equivalent with calling 
+		  ReadTransducerFile() then passing the returned response into the driver
+		   with `SetRecResponse()`</summary>
+            <param name="filePath"> Full pathname of the file. </param>
+            <returns> nzOK, nzExceptionOccured </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.ReadMicFileToModeler(System.String)">
+            <summary> Reads microphone table file to modeler. Equivalent with calling  
+		  ReadTransducerFile() then passing the returned response into the driver
+		   with `SetMicResponse()`</summary>
+            <param name="filePath"> Full pathname of the file. </param>
+            <returns> nzOK, nzswFileMissingData, nzExceptionOccured </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.SetRecResponse(GenericCommon.SingleCollection)">
+            <summary>
+	@anchor R_SetRecResponse `SetRecResponse` sets the frequency response of the receiver
+	used by the modeler in the frequency response calculation. 
+	
+	This array is backwards compatible with our legacy drivers.
+</summary>
+            <param name="response">
+	pointer to a array structure, which contains the microphone sensitivity data. This array
+	is backwards compatible with our legacy drivers, and is detailed in the @ref
+	ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK. </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.SetRecResponse(System.Single[])">
+            <summary>
+	`SetRecResponse` sets the frequency response of the receiver
+	used by the modeler in the frequency response calculation.
+	
+	This array is backwards compatible with our legacy drivers.
+</summary>
+            <param name="response">
+	pointer to a array structure, which contains the microphone sensitivity 
+	data. This array is backwards compatible with our legacy drivers, and is detailed in 
+	the @ref ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK. </returns>
+
+@internal
+@test
+
+<b>It is important that we compare that the modeled response matches the measured response with an 
+actual device within our tolerances.</b>
+
+Tested under `GetFrArray()` in each amp specific class.
+</member>
+        <member name="M:GenericCommon.G_Common.SetMicResponse(GenericCommon.SingleCollection)">
+            <summary>
+	@anchor R_SetMicResponse `SetMicResponse` loads the frequency response, in sensitivity
+	values, of the microphone used by the modeler in the frequency response calculation.
+	
+	 This array is backwards compatible with our legacy drivers.
+</summary>
+            <param name="response">
+	pointer to an name/value list, which contains the microphone sensitivity data. This array
+	is backwards compatible with our legacy drivers, and is detailed in the @ref
+	ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK. </returns>
+
+@internal
+@test1
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.SetMicResponse(System.Single[])">
+            <summary>
+	`SetMicResponse` loads the frequency response, in sensitivity
+	values, of the microphone used by the modeler in the frequency response calculation.
+	
+	 This array is backwards compatible with our legacy drivers.
+</summary>
+            <param name="response"> pointer to a array structure, which contains the microphone sensitivity
+	data. This array is backwards compatible with our legacy drivers, and is detailed
+	in the @ref ModelerDetails "Modeler Details" section.
+</param>
+            <returns> nzOK. </returns>
+
+@internal
+@test
+
+<b>It is important that we compare that the modeled response matches the measured response with an 
+actual device within our tolerances.</b>
+
+Tested under `GetFrArray()` in each amp specific class.
+</member>
+        <member name="M:GenericCommon.G_Common.TestTone(System.Int16)">
+            <summary>
+	`TestTone` commands the nanoDSP to play `numBeeps` tones at the prompt level and
+	frequency settings previously programmed to the instrument. These prompt tones are used to
+	notify user of user made changes in volume and program, and also warnings such as low
+	battery.
+</summary>
+            <param name="numBeeps"> The number of beeps to generate. A value between 1 and 4. </param>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, nzNoProgrammer, or nzBadArgument.</returns>
+
+@internal
+@test1 <b>Valid</b>
+
+1. Select the number of tones between 1 and 4 inclusive.
+2. Click the "Test Tone" button. {Should hear set number of beeps and see no errors}  
+
+@test2 <b>Out Of Range</b>
+
+Test with x = 0, -1, -32768, 5, 6, 32767 and some random out of range values.
+
+1. Set number of tones to x
+2. Click the "Test Tone" button. {Should get nzBadArgument error}
+</member>
+        <member name="M:GenericCommon.G_Common.AudioOff">
+            <summary> 
+	Disables sound output in nanoDSP. 
+	
+	See the @ref GeneralProgrammingTips "General Tips" section about maintaining audio state.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, or nzNoProgrammer.	 </returns>
+
+@internal
+@test1
+
+Tested under `AudioOn()` tests.
+</member>
+        <member name="M:GenericCommon.G_Common.AudioOn(System.Int16)">
+            <summary>
+	`AudioOn` sets the live program in the aid and enables sound output. The `active_program`
+	is compared against the current VC configuration and `nzBadArgument` is returned if
+	`active_program` is out of range.
+	- Audion 16: A checksum returned here is specific to the AudioOn data.
+	- Other Amp types: If a previous load caused a checksum error that hasn't been corrected,
+	then the aid will not enable sound and will return a checksum error here.
+	
+	See the @ref GeneralProgrammingTips "General Tips" section about maintaining audio state.
+</summary>
+            <param name="active_program">  
+	A zero indexed indicator of which program to activate.
+	This is range tested against the current VC configuration. Either a `Read()` or a
+	`SetConfig()` and `Load()` should be done to update the config settings before using
+	this method. A prior read is not forced due to the cases where one is loading
+	settings from a file, and the read is a waste of time. In those cases you should
+	only use `AudioOn()` after loading the settings.
+</param>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, nzNoProgrammer, nzBadArgument, or nzCheckSumError. </returns>
+
+@internal
+@test1
+
+1. Press the "Audio Off" button and the devices sound will shut off
+2. Press the "Audio On" button and the devices sound should turn on
+3. Press the "Audio Off" button and the devices sound will shut off again
+</member>
+        <member name="M:GenericCommon.G_Common.GetDetectionInfo">
+            <summary>
+	`GetDetectionInfo` returns identification data for the active side read from the nanoDSP
+	with `Detect()`.
+</summary>
+            <returns> A name/value list of the detection data. </returns>
+
+@internal
+@test1
+
+Tested under `G_Common::Detect()`.
+</member>
+        <member name="M:GenericCommon.G_Common.Detect">
+            <summary>
+`Detect` interrogates the nanoDSP on the active side for its identification information, 
+such as serial number and hearing instrument model type(ModelID).
+This will function with all previous IntriCon nanoDSP devices except Scenic. If the
+platform ID of the connected device is valid, the platform ID member variable is set so
+that there is no need to call the method `SetPlatformID()`. Use `GetDetectionInfo()`
+after `Detect()` to get all the identification information from the driver.
+</summary>
+            <remarks>
+The method `GenericCommon::G_Common::Detect()` is used to query the connected device and retrieve
+the detection information. You then retrieve parameters from the driver with the
+ method.
+
+Most of the parameters returned from `GenericCommon::G_Common::GetDetectionInfo` are part of the 
+MDA(Manufacturers Data Area) and can be changed by using the `SetMDA()` method.
+Some of the parameters are read only.
+
+### Full List of Detection Parameters
+
+Some amp types have fewer parameters than this.
+
+* AlgVer_Build
+* AlgVer_Major
+* AlgVer_Minor
+* LayoutVersion
+* MANF_ID
+* MANF_reserve_1
+* MANF_reserve_2
+* MANF_reserve_3
+* MANF_reserve_4
+* MANF_reserve_5
+* MANF_reserve_6
+* MANF_reserve_7
+* MANF_reserve_8
+* MANF_reserve_9
+* MANF_reserve_10
+* ModelID
+* Nl2Experience
+* Platform_ID
+* Ear
+* TubeType
+* TipType
+
+## Parameter Details
+
+### Algorithm Version
+Parameter names:
+* AlgVer_Build
+* AlgVer_Major
+* AlgVer_Minor
+
+These three parameters together give the nanoDSP firmware version of the device. They are to be grouped together like this :
+
+~~~
+AlgVer_Major.AlgVer_Minor.AlgVer_Build
+~~~
+
+
+### Layout Version
+Parameter name: LayoutVersion
+
+This is only valid for Audion series of nanoDSP amplifiers. It can be used to quickly determine the organization of the MDA data.
+If during the life of your products, the MDA structure must change, you increment the LayoutVersion. In software, you simply
+check the version of LayoutVersion and call your appropriate MDA parsing method.
+
+### Manufacturer ID
+Parameter name: MANF_ID
+
+Manufacturer ID is a security feature. If this is set to a non - zero value the amplifier cannot be read or written by any software unless
+the matching password been entered in the security section of the software. This security is managed by the software, not the driver.
+IntriCon assigns unique Manufacturer ID and password for each manufacturer.
+
+### MDA data
+Parameter names:
+* MANF_reserve_1
+* MANF_reserve_2
+* MANF_reserve_3
+* MANF_reserve_4
+* MANF_reserve_5
+* MANF_reserve_6
+* MANF_reserve_7
+* MANF_reserve_8
+* MANF_reserve_9
+* MANF_reserve_10
+
+The MDA(Manufacturers Data Area) is an array of 16 bit words that can be used to store any sort of data that can fit in this space. 
+Some examples are serial number, hardware options on hearing aid, audiogram data, etc.
+
+Note: Most of the Audion series of nanoDSP amplifiers has more than 10 words of MDA. Only the first 10 words is read through the detect method,
+since that is enough for identification information.
+
+### Model ID
+Parameter name: ModelID
+
+Model ID is used to store the identification number of the specific hearing instrument model. This is typically and indicator of the
+exact hardware combination, such as: amp type, VC type, mic model, receiver model, telecoil model, if has auto telecoil switch, etc.
+
+Some amp types store this in one of the reserve words. The Generic Driver extracts it from the approprate location. If your software uses that
+location for some other purpose, them Model ID will be meaningless
+
+### Platform Identification
+Parameter name: Platform_ID
+
+Platform_ID is a numeric indicator for the amplifier type. Each amp type is given a specific Platform ID. 
+For some amp types that are very similar, the algorithm version can be a differentiating factor. For this reason, it is best to
+ignore Platform_ID and instead use the `GenericCommon::G_Common::GetAmpTypeDetected()` method, which returns a value that matches
+the [ampType enumeration](@ref ampTypeEnum) for ease of use.
+
+### Ear
+
+Only available on BLE devices.
+`Ear` indicates the side of the head the instrument is programmed for. The instrument should be connected to this side of the programmer.
+
+### Voice_Prompt_Language
+
+Audion8 device types only. 
+The voice prompt language type loaded in the amp.  There can only be one language loaded into the amp and the language cannot be changed. 
+Language types: English = 1, Russian = 2,Turkish = 3, Chinese = 4, German = 5.
+
+### TubeType, TipType, Nl2Experience
+
+These are usefull for fitting software and possibly datalogging. Use the G_Enums `TubeTypes`, `TipTypes`, `Nl2Exeriences` to get the
+index meanings.
+
+These are extracted from MANF_reserve_10 or MANF_reserve_6 (MDA_5) if Audion16 variant, Audion4, or Audion6. If your software uses that location for some other  
+purpose, these parameters will be meaningless.
+
+</remarks>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument, nzNoProgrammer, or
+	nzChecksumError. </returns>
+
+@internal
+@test
+This method is unique in that it works with all amp types except Scenic. Therefore, it needs to be tested 
+with all 17+ IntriCon amp types.
+
+@test1 <b>All Amp Types </b>
+
+-# Connect HI.
+-# Use Initializer or Production Tester to write Model ID, Serial Number, etc. 
+   Then use Slider, Motif, or test app to fill in random values in any zeroed MDA locations.
+-# Detect.
+-# Verify all the detect data displayed in the log matches the expected known values.
+	-# "ModelID" is an Generic Driver only additional parameter for all amp types. 
+	Verify this matches the Model ID written to the HI from Initializer or Production Tester 
+	(do not compare to the "reserved" parameter). 
+	For NZ1, NZ2, and NZ3 use both Model IDs in ranges 1-127 and 1024-1151.
+-# Click "Get Dtctd Amp Type (A)". Amp Type Object shall match whatever the Detected Amp Type is.
+-# Click "Get Amp Object Type (A)". Amp Type Object shall match the amp type selected in the amp type combo.
+
+ See `ampType` enum for expected Amp Type values.
+</member>
+        <member name="M:GenericCommon.G_Common.GetConfig">
+            <summary>
+	Returns the configuration parameters from the driver that have been read from
+	the amp or simulated in the driver.
+</summary>
+            <returns> A name/value list of the configuration parameters. </returns>
+
+@internal
+@test1
+
+Tested under `Load()`
+</member>
+        <member name="M:GenericCommon.G_Common.SetConfig(GenericCommon.ParamsDictionary)">
+            <summary>
+	`SetConfig` transfers the configuration parameters to the driver.
+</summary>
+            <param name="mapConfig"> A name/value list of the configuration parameters. </param>
+            <returns> One result code: nzOK, nzInvalidParameterName, nzConfigParameterOutOfRange, 
+		  or nzMissingParameterName. </returns>
+
+@internal
+@test1
+
+Motif has unit tests for these to test out of range conditions. 
+Otherwise, Tested under `Load()`.
+</member>
+        <member name="M:GenericCommon.G_Common.Lock">
+            <summary>
+	Locks data to the nanoDSP ROM that was previously loaded to RAM. This includes program
+	parameters, configuration parameters, and MDA.
+	
+	- Audion 16: Lock not affected by checksum errors caused during Load.
+	- Other amps: If a previous load caused a checksum error that hasn't been corrected,
+	then the aid will not lock and will return a checksum error here.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument,
+			nzWrongInstrument, nzNoProgrammer, or nzCheckSumError (except Audion16). </returns>
+
+@internal
+@test1
+
+Tested under `Load()`
+</member>
+        <member name="M:GenericCommon.G_Common.Load">
+            <summary>
+	Loads all program and configuration parameters from the driver to the nanoDSP RAM. This
+	will also load the MDA for amp types that do not have `LoadMDA()`.
+</summary>
+            <returns> One result code: nzOK, nzProgrammerError, nzNoInstrument, nzWrongInstrument, 
+		  nzNoProgrammer, or nzChecksumError. </returns>
+
+@internal
+
+Program (*.PGM) files used for this testing are located <a href=".\TestPGMs">in this sub-folder</a>.
+
+Audion 16 based amps: The Biquad coefficients are only read from or loaded to the instrument based on a few rules:
+1. If "Noise_Filter_Ref" &gt; 0 then the noise Biquad coefficients are read / loaded with the configs.
+2. If "Output_Filter_Enable" &gt; 0 then the output Biquad coefficients are read / loaded with the configs.
+
+@test <b>1 Min Values</b>
+
+-# Select "Everything" and click "Read".
+-# Set all programs and configs to index 0 by reading MINIMUM PGM file.
+-# Set "test" config parameter to secret code.
+-# Load device with "Load Updates" box not checked.
+-# Lock changes.
+-# Repower device and "Read".
+-# Save to PGM file "{amptype} TEST min.pgm"
+-# Do file difference between orig PGM and TEST pgm. They shall match.
+
+@test <b>2 Max Values</b>
+
+-# Select "Everything" and click "Read".
+-# Set all programs and configs to their max allowable index by reading MAXIMUM PGM file.
+-# Set "test" config parameter to secret code.
+-# Load device with "Load Updates" box not checked.
+-# Lock changes.
+-# Repower device and "Read". 
+-# Save to PGM file "{amptype} TEST max.pgm"
+-# Do file difference between orig PGM and TEST pgm. They shall match.
+
+@test <b>3 Random Values</b>
+
+-# Select "Everything" and click "Read".
+-# Set all programs and configs to random values within each parameters rang by reading RANDOM PGM file.
+-# Set "test" config parameter to secret code.
+-# Load device with "Load Updates" box not checked.
+-# Lock changes.  
+-# Repower device and "Read".
+-# Set "Num_Programs" parameter to max.
+-# Save to PGM file "{amptype} TEST max.pgm"
+-# Do file difference between orig PGM and TEST pgm. They shall match.
+
+@test <b>4 Load Only, No pre-Read (A16 amps only)</b>
+
+-# Load DUT with latest firmware (important step to verify fix of previous GD issue with this test)
+-# [Repeat_Start] Repower HI
+-# Restart Software (to clear GD memory)
+-# Open program file under test.
+-# Load device with "Programs and Configs" and with "Load Updates" box not checked. 
+   Shall not recieve any errors, especially CHECKSUM error.
+-# Read.
+-# Save to PGM file "{loaded PGM name} {amptype} TEST.pgm"
+-# Do file difference between orig PGM and TEST pgm. They shall match.
+-# GOTO [Repeat_start] and try with other test files.
+</member>
+        <member name="M:GenericCommon.G_Common.Read">
+            <summary>
+	Reads all program and configuration parameters from the nanoDSP RAM into the driver. This
+	will also read the MDA for amp types that do not have `ReadMDA()`.
+</summary>
+            <returns> One result code: nzOK, nzChecksumError, nzProgrammerError, nzNoInstrument, 
+		  nzWrongInstrument, or nzNoProgrammer. </returns>
+
+@internal
+@test1
+
+Tested under `Load()`
+</member>
+        <member name="M:GenericCommon.G_Common.ConnectedStealth">
+            <summary>
+	`ConnectedStealth()` tests for a connected device. `ConnectedStealth()` only works with
+	Hipro, since a voltage measurement is made by the Hipro to test for electrical load of an
+	instrument. Since communication with the instrument does not occur, the amp type
+	can not be determined (i.e. This method won't return nzWrongInstrument).
+</summary>
+            <returns> One result code: nzOK, nzNoInstrument. </returns>
+
+@internal
+@test1
+  
+-# Connect a Hipro.
+-# Initialize Hipro.
+-# Connect any HI.
+-# Click "Connected Stealth", shall return nzOK
+
+ @test2
+
+-# After test 1...
+-# Disconnect the HI.
+-# Click "Connected Stealth", shall return nzNoInstrument
+</member>
+        <member name="M:GenericCommon.G_Common.GetVoicePromptList">
+            <summary> Returns the list of voice prompt words or phases in order of the index. 
+		  The list changes based on the amp type object. </summary>
+            <returns> Nullptr if current amp type doesn't have voice prompts, else the voice prompt list. </returns>
+
+@internal
+@test1
+
+-# Select amp in Amp Type combo in menu. 
+-# View items in Voice Prompts list combo next to "Test prompt" button.
+Verify this list matches expected list for amp.
+-# Press "Test Prompt" button for each item in list. Verify
+voice prompt listed is voice prompt heard.
+-# Try each amp type in Amp Type combo in menu.
+</member>
+        <member name="M:GenericCommon.G_Common.SetPlatformId(System.Int16)">
+            <summary>
+	This function sets the platform ID member variable within the DLL. You can only use a
+	platform ID that is valid for the amp type object being used. For most amps there is only
+	one possible value. Some older amps have several values.
+	
+	The platform ID controls some algorithms in the driver such as autofit. The ability to
+	set the platform ID is made available so that these different algorithms may be accessed
+	in simulated mode.
+	
+	See the antonym `GetPlatformId()` for more information.
+</summary>
+            <param name="platformId"> The platform ID to set in the driver. </param>
+            <returns> nzOK or nzBadArgument. </returns>
+
+@internal
+@test1
+
+Live
+1. Driver -&gt; "Set Platform ID" to valid value to match amp type object in use. For example,
+  if Amp Type combo set to "Audion 16" then use 24.
+2. Driver -&gt; "Get Platform ID"  shall return same value.
+3. Try "Set Platform ID" with other values. Should not allow you to set it to any invalid value.  
+   [See amp/FW spread sheet (not in this manual)]
+   
+TODO: Need table of valid platform IDs for each amp type object.
+
+</member>
+        <member name="M:GenericCommon.G_Common.GetPlatformId">
+            <summary>
+	This function returns the platform ID member variable from within the DLL. If the
+	platform ID of a connected instrument is not known, call the Detect function, which
+	detects and sets the platform ID automatically based on the connected nanoDSP amplifier.
+	If detect fails then the platform ID will be set to the default platform ID of the amp
+	type object being used by the calling software.
+	
+	See the antonym `SetPlatformId()` for more information.
+</summary>
+            <returns> The platform ID member variable from within the DLL. </returns>
+
+@internal
+@test Notes
+
+Test in conjunction with `GetAmpDetected()`.
+
+@test1 <b>BLE</b>
+
+-# Start Scan.Stop Scan.BLE Connect.
+-# Driver -&gt; "Get Platform ID" should match amp type platform ID [See amp/FW spread sheet (not in this manual)].  
+
+@test2 <b>Wired basic</b>
+
+-# Connect. Detect.
+-# Driver -&gt; "Get Platform ID" should match amp type platform ID [See amp/FW spread sheet (not in this manual)].  
+
+@test3 <b>Wired Multiple Amps</b>
+
+-# Open amp/FW spread sheet that lists Chip IDs and Platform IDs (not in this manual)
+-# Starting at the top of list, connect each device one at a time for the follow steps.
+-# Detect.
+-# Driver -&gt; "Get Platform ID" should match amp type platform ID [See amp/FW spread sheet (not in this manual)].  
+-# Repeat last 3 steps until all amp types are tested.
+</member>
+        <member name="M:GenericCommon.G_Common.GetAmpDetected">
+            <summary>
+	Allows user to get the AmpType detected from by driver. Useful right after detect to
+	choose which amp type object to work with. Will return ampType.typeNoAmp if no amp has
+	been detected. This returns the detected amp type after detect for as long as the
+	AmpTypeObject has not changed.
+	
+	If an amp becomes disconnected after being detected, this method will not return
+	ampType.typeNoAmp. Your notification of this will be nzNoInstrument error value when
+	using any command that communicates with the nanoDSP.
+    
+    When using BLE devices, `BleConnect()` also sets the detected amp type returned by
+    this method.
+</summary>
+            <returns> A value from the ampType enumeration. </returns>
+
+@internal
+@test Notes
+
+
+
+
+
+ Not tested in C# test app.
+ 
+ 
+ 
+ 
+ 
+Test in conjunction with `GetPlatformId()`.
+
+@test <b>General Concept</b>
+
+See `ampType` enum for expected Amp Type values. 
+
+After detecting an amp type (amp type selector in menu) that matches the amp type object 
+being used, both the "Amp Type Detected" and "Amp Type Object" shall both be the same.
+When using an amp type object that is different from the amp type detected, "Amp Type Detected"
+will be a different amp type then "Amp Type Object". One must change the Amp Type to match the
+"Amp Type Detected" before using any other methods.
+
+@test <b>1 BLE: Live matching HI</b>
+
+-# Start test app that matches the HI under test amp type.
+-# Choose the product type that matches the HI under test amp type.
+-# BLE Scan and Connect (Do not use "Detect" )
+-# Click "Get Dtctd Amp Type (A)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Dtctd Amp Type (B)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Amp Object Type (A)". Amp Type Object shall match the HI under test amp type.
+-# Click "Get Amp Object Type (B)". Amp Type Object shall match the HI under test amp type.
+-# Click "Detect".
+-# Click "Get Dtctd Amp Type (A)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Dtctd Amp Type (B)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Amp Object Type (A)". Amp Type Object shall match the HI under test amp type.
+-# Click "Get Amp Object Type (B)". Amp Type Object shall match the HI under test amp type.
+
+@test <b>2 Wired: Live matching HI</b>
+
+Test for each wired type programmer (including NOAHlink).
+
+-# Start test app that matches the HI under test amp type.
+-# Choose the product type that matches the HI under test amp type.
+-# Connect the HI to the programmer
+-# Click "Detect".
+-# Click "Get Dtctd Amp Type (A)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Dtctd Amp Type (B)". Amp Type Object shall match the HI under test amp type..
+-# Click "Get Amp Object Type (A)". Amp Type Object shall match the HI under test amp type.
+-# Click "Get Amp Object Type (B)". Amp Type Object shall match the HI under test amp type.
+
+@test <b>3 Wired: Live non-matching HI</b>
+
+Test for each wired type programmer (including NOAHlink).
+
+-# Start test app that does not match the HI under test amp type, OR 
+   use the test app that matches the amp type and choose the product type that 
+   does not match the HI under test amp type.
+-# Connect the HI to the programmer
+-# Click "Detect".
+-# Click "Get Dtctd Amp Type (A)". Amp Type Object shall NOT match the HI under test amp type.
+-# Click "Get Dtctd Amp Type (B)". Amp Type Object shall NOT match the HI under test amp type.
+-# Click "Get Amp Object Type (A)". Amp Type Object shall match the HI under test amp type.
+-# Click "Get Amp Object Type (B)". Amp Type Object shall match the HI under test amp type.
+
+@test <b>4 Simulated</b>
+
+-# Simulate a device.
+-# Click detect.
+-# Click "Get Dtctd Amp Type (A)" and "Get Amp Object Type (A)". These should always be the same
+ after detect and match the product type combo amp type selected.
+-# Click "Get Dtctd Amp Type (B)" and "Get Amp Object Type (B)". These should always be the same
+ after detect and match the product type combo amp type selected.
+
+@test <b>5 Special Test</b>
+
+On "Process" tab click "Standard Detect Process" and follow instructions. The amp type object value 
+should always match the indicated amp type used. And the DetectedAmpType should match the connected amp 
+after detect, but then no amp after changing amp object.
+</member>
+        <member name="M:GenericCommon.G_Common.GetAmpTypeDetected">
+            <summary>
+	Allows user to get the AmpTypeDetected from the driver. Useful right after detect or 
+    `BleConnect` to choose which amp type object to work with. Will return ampType.typeNoAmp 
+    if no amp has been detected. This returns the detected amp type after detect for as long 
+    as the AmpTypeObject has not changed.
+	
+	If an amp becomes disconnected after being detected, this method will not return 
+	ampType.typeNoAmp. Your notification of this will be nzNoInstrument error value when 
+	using any command that communicates with the nanoDSP.
+    
+    When using BLE devices, `BleConnect()` also sets the detected amp type returned by
+    this method.
+</summary>
+            <returns> A value from the ampType enumeration. </returns>
+
+@internal
+@test <b>Tested in `G_Common::Detect()`.</b>
+
+DSP -&gt; "Get Dtctd Amp Type (A)"
+
+Tested in `G_Common::Detect()`.
+</member>
+        <member name="M:GenericCommon.G_Common.GetAmpObject">
+            <summary> Allows user to get the AmpTypeObject from the driver. </summary>
+            <returns> A value from the ampType enumeration. </returns>
+
+@internal
+@test <b>none (partially tested by using C# test app)</b>
+
+Is somewhat tested simply by using many C# test app features with success.
+TODO: Needs deeper testing.
+</member>
+        <member name="M:GenericCommon.G_Common.GetAmpTypeObject">
+            <summary> Allows user to get the AmpTypeObject from the driver. </summary>
+            <returns> A value from the ampType enumeration. </returns>
+
+@internal
+@test <b>Tested in `GetAmpTypeDetected()`.</b>
+
+DSP -&gt; "Get Amp Object Type (A)"
+Tested in `GetAmpTypeDetected()`.
+</member>
+        <member name="M:GenericCommon.G_Common.initializeSimulationVariables">
+            <summary>
+	Sets the amp parameters to some default starting points. This is automatically called
+	upon an amp type construction and not again after that unless you call it specifically.
+	
+	This is available as a convenience. After construction, you can set your own defaults by
+	using SetParams
+	 and SetConfigs at any time with your own values.
+</summary>
+            <returns> nzOK. </returns>
+
+@internal
+@test <b>none</b>
+
+Not tested in C# test app.
+</member>
+        <member name="M:GenericCommon.G_Common.SetInterfaceType(System.String)">
+            <summary>
+	Sets and initializes the programming interface that will be used to communicate with the
+	nanoDSP. One option is to set the driver into a simulation mode.
+</summary>
+            <param name="type"> Interface type as a string. This MUST match one of the strings returned from
+					GetValidInterfaces_Str() or else nzBadArgument will be returned. </param>
+            <returns> One result code: nzOK, nzBadArgument, nzNoProgrammer, nzswProgrammerNotSupported,
+	or nzProgrammerError. </returns>
+
+@internal
+@test <b>1 base</b>
+
+Use the Programmer combo in the menu to change between each programmer and verify that each programmer type
+initializes and functions. All other C# test app calls to SetInterfaceType use the other overloads.
+</member>
+        <member name="M:GenericCommon.G_Common.SetInterfaceType(System.Int16)">
+            <summary>
+	Sets and initializes the programming interface that will be used to communicate with the
+	nanoDSP. One option is to set the driver into a simulation mode.
+</summary>
+            <param name="type_int"> Any value from the interface_type enumeration passed as a 
+						short data type. </param>
+            <returns> One result code: nzOK, nzBadArgument, nzNoProgrammer, nzswProgrammerNotSupported,
+	or nzProgrammerError. </returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Set product type combo to product type under test.
+-# Connect programmer type under test.
+-# "Driver -&gt; Set Interface Type (A)" button. Set programmer type to programmer type under test. 
+    Shall receive successful initialization.
+-# All "DSP" buttons shall function without error.
+</member>
+        <member name="M:GenericCommon.G_Common.SetInterfaceType(G_Enums.interface_type)">
+            <summary>
+	Sets and initializes the programming interface that will be used to communicate with the
+	nanoDSP. One option is to set the driver into a simulation mode.
+</summary>
+            <param name="type_int"> Any value from the interface_type enumeration. </param>
+            <returns> One result code: nzOK, nzBadArgument, nzNoProgrammer, nzswProgrammerNotSupported,
+	or nzProgrammerError. </returns>
+
+@internal
+@test <b>1 Base</b>
+
+-# Set product type combo to product type under test.
+-# Connect programmer type under test.
+-# Set programmer type to programmer type under test. Shall receive successful initialization.
+-# BLE Scan and Connect if BLE, otherwise "Detect".
+-# All "DSP" buttons shall function without error.
+
+@test <b>2 Alternating Programmers</b>
+
+Using steps from test 1, verify that going between programmer types functions fine without restarting software.
+
+@test <b>3 Alternate Button</b>
+
+Don't need to test this if did test 1.
+-# Set product type combo to product type under test.
+-# Connect programmer type under test.
+-# "Driver -&gt; Set Interface Type (B)" button. Set programmer type to programmer type under test. 
+Shall receive successful initialization.
+</member>
+        <member name="M:GenericCommon.G_Common.SetLogging(System.Boolean)">
+            <summary> Turns driver logging on or off.  
+		  These log files will only appear in ealy development version or debug versions of the driver.
+</summary>
+            <param name="enabled"> True to enable, false to disable. </param>
+            <returns> A short. </returns>
+
+@internal
+@test1
+
+Test App sets this automatically. Use test for `SetLogFilesFolder`.
+</member>
+        <member name="M:GenericCommon.G_Common.SetLogFilesFolder(System.String)">
+            <summary> Sets folder location to put driver log files in. 
+		  These log files will only appear in ealy development version or debug versions of the driver.
+		   </summary>
+            <param name="path"> Full pathname to directory to store driver log files in. </param>
+            <returns> One result code: nzOK, -1 if invalid directory size. </returns>
+
+@internal
+@test <b>1 Base</b>
+
+Test App sets this automatically. 
+-# Choose "Preferences -&gt; Driver Logging"
+-# Do some commands that cause driver logging [Varies with version, BLE commands are safe option].
+-# Click the "DSP -&gt; Open GD Logs Folder" button and verify the log file has new data.
+</member>
+        <member name="T:GenericCommon.G_Common">
+            <summary> 
+The G_Common class contains all the methods types generally common to all amp types.
+Some things may have limited use. For example, BLE methods can only be used when the interface type
+is BLE, which isn't available for all amps.
+</summary>
+        </member>
+        <member name="T:GenericCommon.DongleVersions">
+            <summary> A data type of various versions in the Dongle. </summary>
+        </member>
+        <member name="T:GenericCommon.UisNotifyDelegate">
+            <summary>
+                <b>You implement a method of this prototype in your code.</b> BLE Specific. This is a UIS Notify method 
+   prototype used to create the delegate (callback) in managed code that is called by the GenericAudion8.DLL.
+
+See `G_Common::BleSetUisNotifyDelegate()` for more information.
+</summary>
+
+@internal
+@test1
+
+Tested under `G_Common::BleClearUisNotifyCallback()`.
+</member>
+        <member name="T:GenericCommon.DeviceDisconnectedDelegate">
+            <summary>
+                <b>You implement a method of this prototype in your code.</b> BLE Specific. This is a device disconnected 
+ method prototype used to create the delegate (callback) in managed code that is called by the Generic Driver.
+ 
+ See `G_Common::BleSetDeviceDisconnectedDelegate()` for more information.
+ </summary>
+
+@internal
+@test1
+
+Tested under `G_Common::BleSetDeviceDisconnectedDelegate()`.
+</member>
+        <member name="T:GenericCommon.ScanUpdateDelegate">
+            <summary>
+                <b>You implement a method of this prototype in your code.</b> BLE Specific. This is a device update method 
+prototype used to create the delegate (callback) in managed code that is called by the Generic Driver.
+
+ See `G_Common::BleSetScanUpdateDelegate()` for more information.
+</summary>
+
+@internal
+
+Tested under `G_Common::BleSetScanUpdateDelegate()`.
+</member>
+        <member name="D:GenericCommon.EventCallback_UisNotify_native">
+            <summary>
+                <b>You implement a method of this prototype in your code.</b> BLE Specific. For Native (non-.NET) applications. 
+This is a UIS updates method prototype used to create the callback in non-managed code that is called 
+by the Generic Driver.
+
+ See `G_Common::BleSetUisNotifyCallback()` for more information.
+</summary>
+
+@internal
+
+Tested under `BleSetScanUpdateCallback()`.
+</member>
+        <member name="D:GenericCommon.ScanUpdateCallback_native">
+            <summary>
+                <b>You implement a method of this prototype in your code.</b> BLE Specific. For Native (non-.NET) applications. 
+This is a device update method prototype used to create the callback in non-managed code that is called 
+by the Generic Driver.
+
+ See `G_Common::BleSetScanUpdateCallback()` for more information.
+</summary>
+
+@internal
+
+Tested under `BleSetScanUpdateCallback()`.
+</member>
+        <member name="T:GenericCommon.UisNotifyType">
+            <summary>
+	BLE Specific. One of these values is returned in the UISnotify callback to indicate which parameter
+	has	changed.
+</summary>
+        </member>
+        <member name="M:GenericCommon.ScanInfo.copy">
+            <summary> Creates a copy of an existing `ScanInfo` object. 
+Useful in COM since copy constructors do not work there. </summary>
+        </member>
+        <member name="M:GenericCommon.ScanInfo.#ctor(GenericCommon.ScanInfo)">
+            <summary> Copy constructor to create a copy of an existing
+`ScanInfo` object. </summary>
+        </member>
+        <member name="P:GenericCommon.Int32ListsDictionary.Keys">
+            <summary>	Returns a new StringCollection of the keys (list names) from this Int32ListsDictionary object. </summary>
+            <returns>	An IntCollection of keys. </returns>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.Contains(System.String)">
+            <summary>	Query if this object contains the given key, which is the name of the list. </summary>
+            <param name="key">	The string list name to test for containment. </param>
+            <returns>	True if the key is in this collection, false if not. </returns>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.Remove(System.String)">
+            <summary>	Removes the given key/value pair. The key is the name of the list. </summary>
+            <param name="key">	The key (name of the list) of the list to remove. </param>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.Add(System.String,GenericCommon.IntCollection)">
+            <summary>	Adds key/value pair to the dictionary. The key is name of the list 
+			and the value is a `IntCollection` that contains an ordered list of data. 
+</summary>
+            <param name="key">  	The `String` key, which is the name of the list. </param>
+            <param name="value">	The `IntCollection` value, which is an ordered list of data. </param>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.GetObjectCount">
+            <summary>	Gets the number of Int32ListsDictionary objects currently instantiated. </summary>
+            <returns>	The number of Int32ListsDictionary objects currently instantiated. </returns>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.#ctor(GenericCommon.Int32ListsDictionary)">
+            <summary> Copy Constructor that creates a copy from a previously created Int32ListsDictionary object. </summary>
+            <param name="copy">	The Int32ListsDictionary to copy data from. </param>
+        </member>
+        <member name="M:GenericCommon.Int32ListsDictionary.#ctor">
+            <summary>	Default constructor to create and empty `Int32ListsDictionary` object. </summary>
+        </member>
+        <member name="P:GenericCommon.ProgramsDictionary.Keys">
+            <summary>	Returns a new IntCollection of the keys (programs) from this ProgramsDictionary object. </summary>
+            <returns>	An IntCollection of keys. </returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.swapPrograms(System.Int16,System.Int16)">
+            <summary>	Swaps programs within the current ProgramsDictionary. </summary>
+            <param name="ProgramA">	The program a. </param>
+            <param name="ProgramB">	The program b. </param>
+            <returns>	Nullptr if success, else a `String^` containing the error that occured. </returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.copyProgram(System.Int16,System.Int16,GenericCommon.ProgramsDictionary)">
+            <summary>	Copies the program to another program in the same or another `ProgramsDictionary`. </summary>
+            <param name="toProgram">  	to program. </param>
+            <param name="fromProgram">	from program. </param>
+            <param name="from">		  	Source for the. </param>
+            <returns>	Nullptr if success, else a `String^` containing the error that occured. </returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.fromDictionary(System.Collections.Generic.Dictionary`2{System.Int32,System.Collections.Generic.Dictionary`2{System.String,System.Int32}})">
+            <summary>	Initializes this ProgramsDictionary from the given
+`System::Collections::Generic::Dictionary&lt;Int32, 
+System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^&gt;^` 
+object. </summary>
+            <param name="dic">	
+The dictionary object to copy from, as a 
+`System::Collections::Generic::Dictionary&lt;Int32, 
+System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^&gt;^` object.
+</param>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.toDictionary">
+            <summary>	
+Copies this ProgramsDictionary object to a new
+`System::Collections::Generic::Dictionary&lt;Int32, 
+System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^&gt;^` 
+object.
+</summary>
+            <returns>
+This ProgramsDictionary as a new 
+`System::Collections::Generic::Dictionary&lt;Int32, 
+System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^&gt;^`.
+</returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.fromSortedDictionary(System.Collections.Generic.SortedDictionary`2{System.Int32,System.Collections.Generic.SortedDictionary`2{System.String,System.Int32}})">
+            <summary>	Initializes this ProgramsDictionary from the given 
+`System::Collections::Generic::SortedDictionary&lt;Int32, 
+System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^&gt;^` object.
+			 </summary>
+            <param name="dic">	The 
+`System::Collections::Generic::SortedDictionary&lt;Int32, 
+System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^&gt;^`
+object to copy to this ProgramsDictionary.
+</param>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.toSortedDictionary">
+            <summary>	Copies this ProgramsDictionary object to a new
+			`System::Collections::Generic::SortedDictionary&lt;Int32, 
+			System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^&gt;^` 
+			object . </summary>
+            <returns>
+This object as a new
+`System::Collections::Generic::SortedDictionary&lt;Int32, 
+System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^&gt;^` object.
+</returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.Contains(System.Int32)">
+            <summary>	Query if this object contains the given key, which is a zero indexed program number. </summary>
+            <param name="key">	The Int32 to test for containment. </param>
+            <returns>	True if the key is in this collection, false if not. </returns>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.Remove(System.Int32)">
+            <summary>	Removes the given key/value pair. The key is the zero-indexed program number. </summary>
+            <param name="key">	The key (zero indexed program number) to remove. </param>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.Add(System.Int32,GenericCommon.ParamsDictionary)">
+            <summary>	Adds key/value pair (program) to the dictionary. The key is a zero-indexed program number 
+			and the value is a ParamsDictionary that is a key/value list of parameters 
+			(key = paramter name, value = parameter index value).</summary>
+            <param name="key">  	The `Int32` key, which is the zero-indexed program number. </param>
+            <param name="value">	The `ParamsDictionary` value containing the parameter collection of name/values. </param>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.#ctor(GenericCommon.ProgramsDictionary)">
+            <summary> Constructor that creates a copy from a previously created ProgramsDictionary object. </summary>
+            <param name="copy">	The ProgramsDictionary to copy data from. </param>
+        </member>
+        <member name="M:GenericCommon.ProgramsDictionary.#ctor">
+            <summary>	Default constructor to create and empty `ProgramsDictionary` object. </summary>
+        </member>
+        <member name="P:GenericCommon.StringPairDictionary.Values">
+            <summary>	Returns a new collection of all the values in this collection. </summary>
+            <value>	The values. </value>
+        </member>
+        <member name="P:GenericCommon.StringPairDictionary.Keys">
+            <summary>	Returns a new collection of all the keys in this collection. </summary>
+            <value>	The keys. </value>
+        </member>
+        <member name="M:GenericCommon.StringPairDictionary.toSortedDictionary">
+            <summary> Copies this object's data to a new `System::Collections::Generic::SortedDictionary&lt;String^,String^&gt;^`. </summary>
+            <returns>
+This object as a new `System::Collections::Generic::SortedDictionary&lt;String^,String^&gt;^`.
+</returns>
+        </member>
+        <member name="M:GenericCommon.StringPairDictionary.Contains(System.String)">
+            <summary>	Query if this object contains the given key. </summary>
+            <param name="key">	The String^ to test for containment. </param>
+            <returns>	True if the object is in this collection, false if not. </returns>
+        </member>
+        <member name="M:GenericCommon.StringPairDictionary.Remove(System.String)">
+            <summary>	Removes the given key/value pair based on the given `string` key. </summary>
+            <param name="key">	The key to remove. </param>
+        </member>
+        <member name="M:GenericCommon.StringPairDictionary.Add(System.String,System.String)">
+            <summary>	Adds key/value pair to the dictionary. </summary>
+            <param name="key">  	The `string` key. </param>
+            <param name="value">	The `string` value. </param>
+        </member>
+        <member name="M:GenericCommon.StringPairDictionary.#ctor(GenericCommon.StringPairDictionary)">
+            <summary> Constructor that creates a copy from a previously created object. </summary>
+            <param name="copy">	A variable-length parameters list to copy data from. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.fromDictionary(System.Collections.Generic.Dictionary`2{System.String,System.Single})">
+            <summary>	Initializes this BiquadDictionary object from the given `System::Collections::Generic::Dictionary&lt;String^,float&gt;^` object. </summary>
+            <param name="dic">	The `System::Collections::Generic::Dictionary&lt;String^,float&gt;^` to initialize this BiquadDictionary object with. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.toDictionary">
+            <summary>	Copies this BiquadDictionary data to a new `System::Collections::Generic::Dictionary&lt;String^,float&gt;^` object. </summary>
+            <returns>
+This BiquadDictionary data as a new `System::Collections::Generic::Dictionary&lt;String^,float&gt;^`.
+</returns>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.fromSortedDictionary(System.Collections.Generic.SortedDictionary`2{System.String,System.Single})">
+            <summary>	Initializes this BiquadDictionary from the given `System::Collections::Generic::SortedDictionary&lt;String^,float&gt;^` object. </summary>
+            <param name="dic">	The `System::Collections::Generic::SortedDictionary&lt;String^,float&gt;^` to initialize this BiquadDictionary object with. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.toSortedDictionary">
+            <summary>	Copies this BiquadDictionary data to a new `System::Collections::Generic::SortedDictionary&lt;String^,float&gt;^` object. </summary>
+            <returns>
+This BiquadDictionary data as a `System::Collections::Generic::SortedDictionary&lt;String^,float&gt;^` object.
+</returns>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.Contains(System.String)">
+            <summary>	Query if this object contains the given key. </summary>
+            <param name="key">	The `string` key to test for containment. </param>
+            <returns>	True if the object is in this collection, false if not. </returns>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.Remove(System.String)">
+            <summary>	Removes the given key/value pair. </summary>
+            <param name="key">	The key of the key/value pair to remove. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.Add(System.String,System.Single)">
+            <summary>	Adds a key/value pair to the dictionary. </summary>
+            <param name="key"> The `string` key, which is the parameter name. </param>
+            <param name="value"> The `float` value, which is the parameter value. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.#ctor(GenericCommon.BiquadDictionary)">
+            <summary> Constructor that creates a copy from a previously created BiquadDictionary object. </summary>
+            <param name="copy">	The BiquadDictionary to copy data from. </param>
+        </member>
+        <member name="M:GenericCommon.BiquadDictionary.#ctor">
+            <summary>	Default constructor to create an empyty BiquadDictionary object. </summary>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.fromDictionary(System.Collections.Generic.Dictionary`2{System.String,System.Int32})">
+            <summary>	Initializes this ParamsDctionary object from an `System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^` object. </summary>
+            <param name="dic">	The ParamsDctionary object to copy from, as a System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^.  </param>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.toDictionary">
+            <summary>	Copies this ParamsDictionary object to a new `System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^` object. </summary>
+            <returns>
+This ParamsDictionary data as a new `System::Collections::Generic::Dictionary&lt;String^,Int32&gt;^`.
+</returns>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.fromSortedDictionary(System.Collections.Generic.SortedDictionary`2{System.String,System.Int32})">
+            <summary>	Initializes this ParamsDictionary object from a `System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^`. </summary>
+            <param name="dic">	The dictionary object to copy from, as a `System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^`. </param>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.toSortedDictionary">
+            <summary>	Copies this ParamsDictionary object to a new `System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^` object. </summary>
+            <returns>/
+This ParamsDictionary data as a new `System::Collections::Generic::SortedDictionary&lt;String^,Int32&gt;^`.
+</returns>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.Contains(System.String)">
+            <summary> Query if this object contains the given key. </summary>
+            <param name="key"> The `string` to test for containment. </param>
+            <returns> True if the object is in this collection, false if not. </returns>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.Remove(System.String)">
+            <summary> Removes the given key/value pair from the dictionary. </summary>
+            <param name="key">	The key of the key/value pair to remove to remove. </param>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.Add(System.String,System.Int32)">
+            <summary> Adds key/value pair to the dictionary. </summary>
+            <param name="key">  The `string` key, which is the parameter name. </param>
+            <param name="value"> The `Int32` value, which is the parameter index value. </param>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.#ctor(GenericCommon.ParamsDictionary)">
+            <summary> Constructor that creates a copy from a previously created `ParamsDictionary` object. </summary>
+            <param name="copy">	A variable-length parameters list to copy data from. </param>
+        </member>
+        <member name="M:GenericCommon.ParamsDictionary.#ctor">
+            <summary>	Default constructor to create and empty `ParamsDictionary` object. </summary>
+        </member>
+        <member name="M:GenericCommon.SingleCollection.#ctor(GenericCommon.SingleCollection)">
+            <summary>	Copy constructor to create and new `SingleCollection` object. </summary>
+        </member>
+        <member name="T:GenericCommon.SingleCollection">
+            <summary> 
+List of singles (floats). 
+This list is based on the .NET System::Collections.
+</summary>
+            <seealso cref="!:T:CollectionBase" />
+        </member>
+        <member name="M:GenericCommon.StringCollection.#ctor(GenericCommon.StringCollection)">
+            <summary>	Copy constructor to create and new `StringCollection` object. </summary>
+        </member>
+        <member name="T:GenericCommon.StringCollection">
+            <summary> 
+List of strings. 
+This list is based on the .NET System::Collections.
+</summary>
+            <seealso cref="!:T:CollectionBase" />
+        </member>
+        <member name="T:GenericCommon.IntCollection">
+            <summary> 
+List of integers.
+This list is based on the .NET System::Collections.
+</summary>
+            <seealso cref="!:T:CollectionBase" />
+        </member>
+        <member name="T:GenericCommon.InterfaceTypeCollection">
+            <summary> 
+List of programmer interface types using the enum interface_type. 
+This list is based on the .NET System::Collections.
+</summary>
+            <seealso cref="!:T:CollectionBase" />
+        </member>
+        <member name="M:GenericDriver.WriteProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SB">
+            <summary> Writes a program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. </summary>
+            <param name="filePath">    Full pathname of the file. </param>
+            <param name="mapParams">   Map of the program parameters. </param>
+            <param name="mapConfig">   The map of the configuration parameters. </param>
+            <param name="mapMda">	   The map of the MDA parameters. </param>
+            <param name="LegacyNames"> (Optional) True to use legacy parameter names. False uses Generic Driver parameter names. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="M:GenericDriver.ReadProgramFile(std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,std.map&lt;System.Int32,std.map&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte&gt;&gt;,System.Int32,std.less&lt;std.basic_string&lt;System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte,std.char_traits{System.SByte!System.Runtime.CompilerServices.IsSignUnspecifiedByte},std.allocator&lt;System.SBy">
+            <summary> Reads program file for legacy amps and amps with only programs, configs, and MDAs.
+The MDA gets limited printing to PGM files. 
+</summary>
+            <remarks>
+Requirements:
+-# First few lines: Header, file format version
+-# AlgVer lines next.
+-# Configs next. Can be in any order
+-# Program Programs next, each program listing in order of program number. 
+   The order of the parameters in a program can be in any order.
+</remarks>
+            <param name="filePath">  Full pathname of the file. </param>
+            <param name="mapParams"> [in,out] If non-null, options for controlling the map. </param>
+            <param name="mapConfig"> [in,out] If non-null, the map configuration. </param>
+            <param name="mapMda">    [in,out] If non-null, the map mda. </param>
+            <returns> A short. </returns>
+        </member>
+        <member name="T:Enums.UserEventCodes">
+            <summary>
+Itemized codes for User Event datalog.
+</summary>
+@anchor UserEventCodesEnums
+</member>
+        <member name="T:Enums.errorCode_eMiniTec">
+            <summary> 
+	The errorCode enumerations are specific errors for eMiniTec programmers.
+	
+	These are errors returned from the eMiniTec driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+Hardware Versions:	
+-* eMiniTec1 = old smaller programmer with no lights on it.
+-* eMiniTec2 = slightly larger programmer with lights on it for power and left / right activity.
+
+ </summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="InvalidHandle_OR_I2CnotCapable"> (1) Invalid handle (eMiniTec1 only), or no I2C capable programmer found. </param>
+            <param name="DeviceNotFound_OR_InvalidBaudRate"> (2) Device not found (eMiniTec1 only), or invalid baud rate (eMiniTec2 only): valid range: 400 to 400000. </param>
+            <param name="DeviceNotOpened"> (3) Device not opened. </param>
+            <param name="InputOutputError"> (4) Input/Output error. </param>
+            <param name="InsufficientResources"> (5) Insufficient resources. </param>
+            <param name="DeviceNotOpenedForErase"> (8) Device not opened for erase. </param>
+            <param name="DeviceNotOpenedForWrite"> (9) Device not opened for write. </param>
+            <param name="FailedToWriteDevice"> (10) Failed to write device. </param>
+            <param name="OtherError"> (18) Other error. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_A"> (120) Get Timing: Number of bytes written does not match requested. </param>
+            <param name="GetTimingUnmatchedWriteByteCount_B"> (220) Get Timing: Number of bytes read does not match requested. </param>
+            <param name="ReadWriteUnmatchedWriteByteCount_A"> (140) Read/Write: Number of bytes written does not match requested. </param>
+            <param name="ReadWriteUnmatchedReadByteCount_B"> (240) Read/Write: Number of bytes read does not match requested. </param>
+            <param name="GetTimingDataTransferError_A"> (500) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingDataTransferError_B"> (501) Get Timing: Programmer to PC data transfer error. </param>
+            <param name="GetTimingSyncToInstrumentError_A"> (502) Get Timing: unable to sync with instrument. </param>
+            <param name="GetTimingSyncToInstrumentError_B"> (503) Get Timing: unable to sync with instrument. </param>
+            <param name="InvalidTimingValues"> (520) Read/Write: Invalid timing values. </param>
+            <param name="ReadTimeout"> (530) Read timeout. </param>
+            <param name="ReadWriteDataTransferError_A"> (540) Read/Write: Programmer to PC data transfer error. </param>
+            <param name="ReadWriteDataTransferError_B"> (550) Read/Write: Programmer to PC data transfer error. </param>
+        </member>
+        <member name="T:Enums.errorCode_NoahLink">
+            <summary> 
+	The errorCode enumerations for NOAHlink programmer specific errors. 
+
+	These are errors returned from the NOAHlink driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver if 'GenericCommon::G_Common::GetLastInterfaceError()' is used.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="Success"> (0) No error. </param>
+            <param name="BadParameter"> (1) Bad parameter to function. </param>
+            <param name="NotInitialized"> (2) Library not initialized. </param>
+            <param name="Initialized"> (3) Library already initialized. </param>
+            <param name="InitializeTimeout"> (16) Transaction timed out at start. </param>
+            <param name="FramingError"> (17) Transaction failed due to framing problem. </param>
+            <param name="NoDriver"> (256) NOAHlink drivers not installed. </param>
+            <param name="NoDevice"> (257) No NOAHlink device present. </param>
+            <param name="InUse"> (258) NOAHLink in use by other software. </param>
+            <param name="UnexpectedError"> (65535) Unexpected error occurred. </param>
+        </member>
+        <member name="T:Enums.errorCode_HIPRO">
+            <summary> 
+	The errorCode enumerations for Hi-Pro programmer specific errors. 
+
+	These are errors returned from the Hi-Pro driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+	
+	The errors listed here are from the Hipro 4.1 SDK.
+</summary>
+            <param name="NoError"> (0) No error. </param>
+            <param name="HiproFramingError"> (010) Framing error reported from HI-PRO. </param>
+            <param name="ReceiverOverrun"> (011) Receiver overrun error reported from HI-PRO. </param>
+            <param name="ReceiverNoiseOnLine"> (012) Receiver noise on line error reported from HI-PRO. </param>
+            <param name="ReceiverTimeout"> (015) Receiver timeout error reported from HI-PRO. </param>
+            <param name="InvalidMessageNumber"> (020) Invalid message number reported from HI-PRO. </param>
+            <param name="InvalidMessageHeader"> (021) Invalid message header reported from HI-PRO. </param>
+            <param name="InvalidData"> (022) Invalid data reported from HI-PRO. </param>
+            <param name="MessageTermination"> (023) Message termination error reported from HI-PRO. </param>
+            <param name="TooManyCharactersInArgument"> (030) Too many characters in argument reported from HI-PRO. </param>
+            <param name="TooFewDataInStreamArgument"> (031) Too few data in stream argument reported from HI-PRO. </param>
+            <param name="TooManyDataInStreamArgument"> (032) Too many data in stream argument reported from HI-PRO. </param>
+            <param name="DataArgumentOutOfRange"> (033) Data argument out of valid range reported from HI-PRO. </param>
+            <param name="TooFewDataInDataBlock"> (034) Too few data in hex byte data block reported from HI-PRO. </param>
+            <param name="RequestedDataNotAvailable"> (035) Requested data is not available reported from HI-PRO. </param>
+            <param name="InvalidDataInInputBuffer"> (036) Invalid data in input buffer reported from HI-PRO. </param>
+            <param name="InvalidCommunicationMode"> (037) Invalid communication mode reported from HI-PRO. </param>
+            <param name="TimingTooFast"> (038) Timing too fast reported from HI-PRO. </param>
+            <param name="OutOfMemory"> (040) Out of memory reported from HI-PRO. </param>
+            <param name="LearnIsNotStarted"> (041) Learn is not started reported from HI-PRO. </param>
+            <param name="AlReadyInLearnMode"> (042) All ready in learn mode reported from HI-PRO. </param>
+            <param name="UndefinedOutputBitStream"> (043) No output bit stream defined reported from HI-PRO. </param>
+            <param name="UndefinedInputSpecification"> (044) No input specification defined reported from HI-PRO. </param>
+            <param name="UndefinedPinSpecification"> (045) No pin specification defined reported from HI-PRO. </param>
+            <param name="HiTimeout"> (046) H.I. timeout reported from HI-PRO. </param>
+            <param name="HiproDeviceAuthenticationFailed"> (047) The connected HI-PRO could not be authenticated (Device authentication). Please contact your supplier for assistance. </param>
+            <param name="InputBufferFull"> (048) Input Buffer is Full reported from HI-PRO. </param>
+            <param name="AdcTimeout"> (049) ADC timeout reported from HI-PRO. </param>
+            <param name="ChecksumError"> (050) Checksum error reported from HI-PRO. </param>
+            <param name="FlashVerifyError"> (051) Flash verify error reported from HI-PRO. </param>
+            <param name="InvalidDownloadedProgram"> (052) Invalid downloaded program reported from HI-PRO. </param>
+            <param name="UndefinedError"> (099) Undefined error reported from HI-PRO. </param>
+            <param name="HiproUnresponsive"> (200) TIMEOUT""HI-PRO does not respond""Check power and RS232 connections. </param>
+            <param name="ErrorInWriteComm"> (201) Error in WriteComm?""GetCommError? returns %d. </param>
+            <param name="ErrorInOpenComm"> (202) Error in OpenComm?""COM port may be in use by another device. Try to change COMPort= in HIPRO.INI. </param>
+            <param name="ErrorInSetCommState"> (203) Error in SetCommState? </param>
+            <param name="ErrorInBuildCommDCB"> (204) Error in BuildCommDCB. </param>
+            <param name="UserWasNotLoggedIn"> (205) User was not logged in. </param>
+            <param name="HiproHasBeenReset"> (206) HI-PRO has been reset ( settings lost ). </param>
+            <param name="InvalidDataReceivedFromHipro"> (207) Invalid data received from HI-PRO. </param>
+            <param name="InvalidHeaderReceivedFromHipro"> (208) Invalid header received from HI-PRO. </param>
+            <param name="TooBigOfStreamReceivedFromHipro"> (209) Too big stream received from HI-PRO. </param>
+            <param name="OutOfRangeNumericsReceivedFromHipro"> (210) Numerics received from HI-PRO is out of range. </param>
+            <param name="UnterminatedDataReceivedFromHipro"> (211) No terminator in data from HI-PRO. </param>
+            <param name="IncompleteBlockReceivedFromHipro"> (212) Incomplete block received from HI-PRO. </param>
+            <param name="ErrorInReadComm"> (213) Error in ReadComm?""GetCommError? returns %d. </param>
+            <param name="UnexpectedDataReceivedFromHipro"> (214) Unexpected data from HI-PRO. </param>
+            <param name="BadCheckSumInDataReceivedFromHipro"> (215) Bad CheckSum? in data received from HI-PRO. </param>
+            <param name="ErrorInCloseComm"> (216) Error in CloseComm? </param>
+            <param name="BadParameterSendToInstrumentDriver"> (217) Bad Parameter send to instrument driver. </param>
+            <param name="VBatLow"> (218) VBat low. Disconnect HI from HI-PRO. </param>
+            <param name="SelfTestStatusError"> (219) Self test status error. </param>
+            <param name="ReceiverOverflow"> (221) Receiver overflow""Input buffer too small or not emptied. </param>
+            <param name="Overrun"> (222) Overrun""Interrupts disabled too long time. Try lower baudrate.. </param>
+            <param name="ParityError"> (223) Parity error. </param>
+            <param name="DriverFramingError"> (224) Framing error""Wrong instrument connected or instrument turned off. </param>
+            <param name="BreakDetected"> (225) Break detected""Wrong instrument connected or instrument turned off. </param>
+            <param name="TransmissionQueueWasFull"> (226) Transmission queue was full""Output buffer too small. </param>
+            <param name="UnsupportedRequestedMode"> (227) Requested mode is not supported, or the idComDev parameter is invalid. </param>
+            <param name="TransmissionQueueNeverEmpties"> (228) Transmission queue never empties! Maybe IRQ conflict. </param>
+            <param name="DriverAuthenticationFailed"> (229) The connected HI-PRO could not be authenticated (PC Driver authentication). Please contact your supplier for assistance. </param>
+            <param name="UnknownError"> (255) Unknown error" </param>
+        </member>
+        <member name="T:Enums.errorCode_BLEBG">
+            <summary> 
+	The errorCode enumerations for Bluegiga BLE programmer specific errors. 
+	
+	These are errors returned from the Bluegiga driver that the IntriCon Generic Driver interfaces with. 
+	They are only accessible from the Generic Driver with 'GenericCommon::G_Common::GetLastInterfaceError()'.
+	Generally, there will only be a programmer error if nzProgrammerError was returned from a driver method.
+	Use `GenericCommon::G_Common::ErrorProgrammer()` to log these strings to file.
+</summary>
+            <param name="ble_err_success"> (0) No error. </param>
+            <param name="ble_err_invalid_param"> (384) Command contained invalid parameter. </param>
+            <param name="ble_err_wrong_state"> (385) Device is in wrong state to receive command. </param>
+            <param name="ble_err_out_of_memory"> (386) Device has run out of memory. </param>
+            <param name="ble_err_not_implemented"> (387) Feature is not implemented. </param>
+            <param name="ble_err_invalid_command"> (388) Command was not recognized. </param>
+            <param name="ble_err_timeout"> (389) Command or Procedure failed due to timeout. </param>
+            <param name="ble_err_not_connected"> (390) Connection handle passed is to command is not a valid handle. </param>
+            <param name="ble_err_flow"> (391) Command would cause either underflow or overflow error. </param>
+            <param name="ble_err_user_attribute"> (392) User attribute was accessed through API which is not supported. </param>
+            <param name="ble_err_invalid_license_key"> (393) No valid license key found. </param>
+            <param name="ble_err_command_too_long"> (394) Command maximum length exceeded. </param>
+            <param name="ble_err_out_of_bonds"> (395) Bonding procedure can't be started because device has no space
+									left for bond. </param>
+            <param name="ble_err_bt_error_success"> (512) Command completed successfully. </param>
+            <param name="ble_err_bt_bt_error_authentication_failure"> (517) Pairing or authentication failed due to incorrect
+		results in the pairing or authentication procedure. This could be due to an incorrect PIN or Link Key. </param>
+            <param name="ble_err_bt_pin_or_key_missing"> (518) Pairing failed because of missing PIN, or authentication failed
+											 because of missing Key. </param>
+            <param name="ble_err_bt_bt_error_memory_capacity_exceeded"> (519) Controller is out of memory. </param>
+            <param name="ble_err_bt_connection_timeout"> (520) Link supervision timeout has expired. </param>
+            <param name="ble_err_bt_connection_limit_exceeded"> (521) Controller is at limit of connections it can support. </param>
+            <param name="ble_err_bt_bt_error_command_disallowed"> (524) Command requested cannot be executed because the Controller
+							is in a state where it cannot process this command at this time. </param>
+            <param name="ble_err_bt_bt_error_invalid_command_parameters"> (530) Command contained invalid parameters. </param>
+            <param name="ble_err_bt_bt_error_remote_user_terminated"> (531) User on the remote device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_by_local_host"> (534) Local device terminated the connection. </param>
+            <param name="ble_err_bt_bt_error_ll_response_timeout"> (546) Connection terminated due to link-layer procedure timeout. </param>
+            <param name="ble_err_bt_bt_error_ll_instant_passed"> (552) Received link-layer control packet where instant was in the past. </param>
+            <param name="ble_err_bt_bt_error_controller_busy"> (570) Operation was rejected because the controller is busy and
+												   unable to process the request. </param>
+            <param name="ble_err_bt_bt_error_unacceptable_connection_interval"> (571) Remote evice terminated the connection
+																	because of an unacceptable connection interval. </param>
+            <param name="ble_err_bt_bt_error_directed_advertising_timeout"> (572) Directed advertising completed without a
+																connection being created. </param>
+            <param name="ble_err_bt_bt_error_connection_terminated_due_to_mic_failure"> (573) Connection was terminated because
+											the Message Integrity Check (MIC) failed on a received packet. </param>
+            <param name="ble_err_bt_bt_error_connection_failed_to_be_established"> (574) LL initiated a connection but the connection
+									has failed to be established. Controller did not receive any packets from remote end. </param>
+            <param name="ble_err_smp_passkey_entry_failed"> (769) The user input of passkey failed, for example, the user canceled the operation. </param>
+            <param name="ble_err_smp_oob_not_available"> (770) Out of Band data is not available for authentication. </param>
+            <param name="ble_err_smp_authentication_requirements"> (771) The pairing procedure cannot be performed as
+								 authentication requirements cannot be met due to IO capabilities of one or both devices. </param>
+            <param name="ble_err_smp_confirm_value_failed"> (772) The confirm value does not match the calculated compare value. </param>
+            <param name="ble_err_smp_pairing_not_supported"> (773) Pairing is not supported by the device. </param>
+            <param name="ble_err_smp_encryption_key_size"> (774) The resultant encryption key size is insufficient for the security
+											   requirements of this device. </param>
+            <param name="ble_err_smp_command_not_supported"> (775) The SMP command received is not supported on this device. </param>
+            <param name="ble_err_smp_unspecified_reason"> (776) Pairing failed due to an unspecified reason. </param>
+            <param name="ble_err_smp_repeated_attempts"> (777) Pairing or authentication procedure is disallowed because too little
+										 time has elapsed since last pairing request or security request. </param>
+            <param name="ble_err_smp_invalid_parameters"> (778) The Invalid Parameters error code indicates: the command length is
+											  invalid or a parameter is outside of the specified range. </param>
+            <param name="ble_err_last"> (779) Unkown. </param>
+            <param name="ble_err_att_invalid_handle"> (1025) The attribute handle given was not valid on this server. </param>
+            <param name="ble_err_att_read_not_permitted"> (1026) The attribute cannot be read. </param>
+            <param name="ble_err_att_write_not_permitted"> (1027) The attribute cannot be written. </param>
+            <param name="ble_err_att_invalid_pdu"> (1028) The attribute PDU was invalid. </param>
+            <param name="ble_err_att_insufficient_authentication"> (1029) The attribute requires authentication before it can be read or written. </param>
+            <param name="ble_err_att_request_not_supported"> (1030) Attribute Server does not support the request received from the client. </param>
+            <param name="ble_err_att_invalid_offset"> (1031) Offset specified was past the end of the attribute. </param>
+            <param name="ble_err_att_insufficient_authorization"> (1032) The attribute requires authorization before it can be read or written. </param>
+            <param name="ble_err_att_prepare_queue_full"> (1033) Too many prepare writes have been queued. </param>
+            <param name="ble_err_att_att_not_found"> (1034) No attribute found within the given attribute handle range. </param>
+            <param name="ble_err_att_att_not_long"> (1035) The attribute cannot be read or written using the Read Blob Request. </param>
+            <param name="ble_err_att_insufficient_enc_key_size"> (1036) The Encryption Key Size used for encrypting this link is insufficient. </param>
+            <param name="ble_err_att_invalid_att_length"> (1037) The attribute value length is invalid for the operation. </param>
+            <param name="ble_err_att_unlikely_error"> (1038) The attribute request that was requested has encountered an error that was
+										  unlikely, and therefore could not be completed as requested. </param>
+            <param name="ble_err_att_insufficient_encryption"> (1039) The attribute requires encryption before it can be read or written. </param>
+            <param name="ble_err_att_unsupported_group_type"> (1040) The attribute type is not a supported grouping attribute as defined by a higher layer specification. </param>
+            <param name="ble_err_att_insufficient_resources"> (1041) Insufficient Resources to complete the request. </param>
+            <param name="ble_err_att_application"> (1152) Application error code defined by a higher layer specification. </param>
+        </member>
+        <member name="T:Enums.SerialNumberStyle">
+            <summary> Serial number style options used for encoding and decoding the serial number
+		  into the MDA. See methods `G_Common::EncodeSerialNumber()` and 
+		  `G_Common::DecodeSerialNumber()`. </summary>
+            <param name="TenCharacterAlphaNumeric"> Supports any ASCII character in all 10 positions. </param>
+            <param name="OneToSevenDigits"> Allows between 1 and 7 digits, numeric only. Includes a separate 2 numeric digit year field. </param>
+            <param name="SixDigits"> Must enter 6 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="SevenDigits"> Must enter 7 numeric digits. Includes a separate 2 numeric digit year field. </param>
+            <param name="LetterPlusFiveDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A00098. </param>
+            <param name="LetterPlusFourDigits"> Must enter a single letter followed by 5 numeric digits. Includes a separate 2 numeric digit year field. Example: A0204. </param>
+        </member>
+        <member name="T:Enums.side">
+@anchor sideEnum
+<summary> The side enumeration is used for things like SetRLChannel(). </summary><param name="EarLeft"> Right ear when using an RL channel method. </param><param name="EarRight"> Left ear  when using an RL channel method. </param></member>
+        <member name="T:Enums.ampType">
+@anchor ampTypeEnum
+<summary> The ampType enumeration lists the amp types that the generic driver can detect. 
+		 Not all amp types are supported beyond detection; legacy drivers must be used in 
+		 those cases. To be used with `GetAmpTypeDetected()`.</summary><param name="typeNoAmp"> (-1) No amp type set</param><param name="typeNZ1"> (2) Digital One 2CH</param><param name="typeNZ2"> (5) Digital One 4CH AFC</param><param name="typeNZ2_Special"> (1000) Digital One 4CH</param><param name="typeNZ3"> (6) Digital One 4CH NR/NR+</param><param name="typeIntune"> (7) InTune</param><param name="typeSpin"> (9) Spin</param><param name="typeEthos"> (10) Ethos</param><param name="typeOvertus"> (1001) Overtus</param><param name="typeSpinNr"> (16) Spin NR</param><param name="typeEssential"> (18) Essential 150</param><param name="typeAudion6"> (20) Audion 6</param><param name="typeAudion4"> (21) Audion 4</param><param name="typeAudion8"> (23) Audion 8</param><param name="typeAudion8BLE"> (25) Audion8 BLE</param><param name="typeAudion16"> (24) Audion 16</param><param name="typeAudion16BLE"> (26) Audion16 BLE</param><param name="typeAudionS16BLE"> (29) Audion16S BLE </param><param name="typeAudion16h"> (28) Audion 16h</param><param name="typeAudion16BLEplus"> (30) Audion16 BLE Plus</param><param name="typeAudion16plus"> (31) Audion 16 plus</param></member>
+        <member name="T:Enums.interface_type">
+@anchor interface_typeEnum
+<summary> The interface_type enumeration lists the programmers that the generic driver supports. </summary></member>
+        <!-- Discarding badly formed XML document comment for member 'M:Programmer.readWrite(System.Int32!System.Runtime.CompilerServices.IsLong,System.Byte*,System.Byte*,System.UInt16,System.UInt16)'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:G_Enums.errorCode'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.ParamsDictionary'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.BiquadDictionary'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.StringPairDictionary'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.ProgramsDictionary'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.Int32ListsDictionary'. -->
+        <!-- Discarding badly formed XML document comment for member 'T:GenericCommon.ScanInfo'. -->
+        <!-- Discarding badly formed XML document comment for member 'F:GenericCommon.UisNotifyType.VolumeLevel'. -->
+        <!-- Discarding badly formed XML document comment for member 'F:GenericCommon.UisNotifyType.ActiveProgram'. -->
+        <!-- Discarding badly formed XML document comment for member 'F:GenericCommon.UisNotifyType.BatteryLevel'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.GetInterfaceType'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.Connected'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.GetStatus'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.SetParams(GenericCommon.ProgramsDictionary)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.GetParams'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.GetLastInterfaceError'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.LoadUpdates'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.EncodeSerialNumber(GenericCommon.ParamsDictionary,System.String,System.String,G_Enums.SerialNumberStyle)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.ErrorProgrammer(System.Int16,G_Enums.interface_type)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.BleSetDeviceDisconnectedCallback(System.IntPtr)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.BleSetUisNotifyCallback(System.IntPtr)'. -->
+        <!-- Discarding badly formed XML document comment for member 'M:GenericCommon.G_Common.BleSetScanUpdateCallback(System.IntPtr)'. -->
+    </members>
+</doc>
