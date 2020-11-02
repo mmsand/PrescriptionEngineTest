@@ -257,9 +257,11 @@ namespace Intricon.PrescriptionEngine.Controllers
                 }
 
                 // Do the Auto fit
-                string[] A4Params = PrescriptionAND.Autofit.Audion4AutoFit(model, autofitInputs);
+                // string[] A4Params = PrescriptionAND.Autofit.Audion4AutoFit(model, autofitInputs);
 
-                return A4Params;
+                // return A4Params;
+
+                return new string[] { "Testo!" };
             }
             catch (Exception ex)
             {
