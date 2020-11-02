@@ -173,8 +173,10 @@ namespace NetPrescriptionEngine.Controllers
 
                 for (int i = 0; i < 11; i++)
                 {
-                    autofitInputs.AudiogramAC[i] = float.Parse(audiogramAC[i]);
-                    autofitInputs.AudiogramACOtherSide[i] = float.Parse(otherSideAC[i]);
+                    //autofitInputs.AudiogramAC[i] = float.Parse(audiogramAC[i]);
+                    //autofitInputs.AudiogramACOtherSide[i] = float.Parse(otherSideAC[i]);
+                    autofitInputs.AudiogramAC[i] = (byte)float.Parse(audiogramAC[i]);
+                    autofitInputs.AudiogramACOtherSide[i] = (byte)0;
                 }
 
                 //Manufacturer Data
@@ -232,8 +234,8 @@ namespace NetPrescriptionEngine.Controllers
 
                 for (int i = 0; i < 11; i++)
                 {
-                    autofitInputs.AudiogramAC[i] = byte.Parse(audiogramAC[i]);
-                    autofitInputs.AudiogramACOtherSide[i] = byte.Parse(otherSideAC[i]);
+                    autofitInputs.AudiogramAC[i] = float.Parse(audiogramAC[i]);
+                    autofitInputs.AudiogramACOtherSide[i] = float.Parse(otherSideAC[i]);
                 }
 
                 //Manufacturer Data
