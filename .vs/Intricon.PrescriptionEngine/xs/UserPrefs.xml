@@ -3,16 +3,15 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="Intricon.PrescriptionEngine/Web.config">
     <Files>
       <File FileName="Intricon.PrescriptionEngine/Controllers/Audion8Controller.cs" Line="264" Column="1" />
-      <File FileName="Intricon.PrescriptionEngine/Web.config" Line="30" Column="27" />
+      <File FileName="Intricon.PrescriptionEngine/Web.config" Line="32" Column="18" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="Intricon.PrescriptionEngine" expanded="True">
-            <Node name="Intricon.PrescriptionEngine" expanded="True">
+            <Node name="Intricon.PrescriptionEngine" expanded="True" selected="True">
               <Node name="Controllers" expanded="True" />
               <Node name="Dependencies" expanded="True" />
-              <Node name="Web.config" selected="True" />
             </Node>
           </Node>
         </State>
