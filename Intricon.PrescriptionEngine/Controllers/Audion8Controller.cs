@@ -138,10 +138,10 @@ namespace Intricon.PrescriptionEngine.Controllers
         {
             public Audion4Response(string[] A4configuration)
             {
-                Configuration = "";  //Convert.ToBase64String A4configuration[];
+                Configuration = A4configuration;
             }
 
-            public string Configuration { get; set; }
+            public string[] Configuration { get; set; }
         }
 
     }
