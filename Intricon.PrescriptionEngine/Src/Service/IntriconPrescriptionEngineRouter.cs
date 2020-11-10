@@ -66,6 +66,15 @@ namespace Intricon.PrescriptionEngine.Src.Service
                 autofitInputs.Mda = data;
             }
 
+            return AutoFit(request, autofitInputs, model);
+
+        }
+
+        private static FittingResponse AutoFit(
+            FittingRequest request,
+            PrescriptionAND.AutofitInputs autofitInputs,
+            PrescriptionAND.Model model)
+        {
             switch (request.Name)
             {
                 case "L200B":
