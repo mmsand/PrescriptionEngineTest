@@ -139,9 +139,12 @@
     
   <ItemGroup>
     <Folder Include="Content\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Scripts\" />
+    <Folder Include="Src\" />
+    <Folder Include="Src\Controller\" />
+    <Folder Include="Src\Service\" />
+    <Folder Include="Src\Model\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Web.config" />
@@ -192,7 +195,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="Controllers\Audion8Controller.cs" />
+    <Compile Include="Src\Controller\FittingController.cs" />
+    <Compile Include="Src\Service\PrescriptionEngineRoutingService.cs" />
+    <Compile Include="Src\Model\FittingRequest.cs" />
+    <Compile Include="Src\Model\FittingResponse.cs" />
+    <Compile Include="Src\Service\IntriconPrescriptionEngineRouter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="applicationHost.xdt" />
