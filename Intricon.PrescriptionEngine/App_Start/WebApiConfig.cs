@@ -7,20 +7,26 @@ namespace Intricon.PrescriptionEngine
     {
         public static void Register(HttpConfiguration config)
         {
-            // Web API configuration and services
-
-            // Web API routes
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+                name: "audion8",
+                routeTemplate: "api/audion8",
+                defaults: new { controller = "fitting" });
 
-            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/plain"));
-            config.Formatters.JsonFormatter.SerializerSettings.DateFormatString = "M-d-yyyy";
+            config.Routes.MapHttpRoute(
+                name: "fit",
+                routeTemplate: "api/fit",
+                defaults: new { controller = "fitting" });
+
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(
+                new MediaTypeHeaderValue("text/html"));
+
+            config.Formatters.JsonFormatter.SupportedMediaTypes.Add(
+                new MediaTypeHeaderValue("text/plain"));
+
+            config.Formatters.JsonFormatter.SerializerSettings.DateFormatString =
+                "M-d-yyyy";
 
             // config.Filters.Add(new ApiAuthorizeAttribute());
         }

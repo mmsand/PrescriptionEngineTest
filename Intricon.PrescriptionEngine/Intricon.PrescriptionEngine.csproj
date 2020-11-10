@@ -195,7 +195,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="Src\Controller\Audion8Controller.cs" />
+    <Compile Include="Src\Controller\FittingController.cs" />
     <Compile Include="Src\Service\PrescriptionEngineRoutingService.cs" />
     <Compile Include="Src\Model\FittingRequest.cs" />
     <Compile Include="Src\Model\FittingResponse.cs" />

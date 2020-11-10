@@ -4,7 +4,7 @@ using Intricon.PrescriptionEngine.Src.Model;
 
 namespace Intricon.PrescriptionEngine.Controllers
 {
-    public class Audion8Controller : ApiController
+    public class FittingController : ApiController
     {
 
         //todo: [ApiAuthorize]
