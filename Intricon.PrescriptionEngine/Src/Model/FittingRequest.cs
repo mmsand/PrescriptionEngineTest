@@ -34,7 +34,7 @@ namespace Intricon.PrescriptionEngine.Src.Model
 
         public bool Validate()
         {
-            return (DateOfBirth == DateTime.MinValue);
+            return DateOfBirth != DateTime.MinValue;
         }
     }
 }
